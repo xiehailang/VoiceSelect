@@ -1,4 +1,4 @@
-package VoiceSelect;
+package VoiceSelectTest3;
 
 import java.awt.AWTException;
 import java.awt.BorderLayout;
@@ -20,12 +20,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,25 +43,20 @@ import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileSystemView;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFName;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.Row;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.baidu.aip.speech.AipSpeech;
 
 
-public class VoiceSelect {
+public class VoiceSelectTest3 {
 	
 	public static final String APP_ID = "11453107";
     public static final String API_KEY = "pLu1heTGawjYDxfQCjGn5wGy";
@@ -107,47 +99,12 @@ public class VoiceSelect {
 	private long startTime;
 	private long endTime;
 	
-	public VoiceSelect(){
+	public VoiceSelectTest3(){
 		client = new AipSpeech(APP_ID, API_KEY, SECRET_KEY);
 		
 		initFrame();
 		mainEvent();
 		
-	}
-	
-	public void test() {
-		String filePath = "数据汇总.xls";
-		String sheetName = "测试";
-		// Excel文件易车sheet页的第一行
-		String title[] = { "日期", "城市", "新发布车源数" };
-		// Excel文件易车每一列对应的数据
-		String titleDate[] = { "date", "city", "newPublish" };
-
-		ExcelManage em = new ExcelManage();
-		// 判断该名称的文件是否存在
-		boolean fileFlag = em.fileExist(filePath);
-		if (!fileFlag) {
-			em.createExcel(filePath, sheetName, title);
-		}
-		// 判断该名称的Sheet是否存在
-		boolean sheetFlag = em.sheetExist(filePath, sheetName);
-		// 如果该名称的Sheet不存在，则新建一个新的Sheet
-		if (!sheetFlag) {
-			try {
-				em.createSheet(filePath, sheetName, title);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		Data user = new Data();
-		user.setDate("206-12-21");
-		user.setCity("北京");
-		user.setNewPublish("5");
-		// 写入到excel
-		em.writeToExcel(filePath, sheetName, user, titleDate);
-
 	}
 	
 	// 语音命令的分配
@@ -251,6 +208,7 @@ public class VoiceSelect {
 		mainFrame.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
+				// TODO Auto-generated method stub
 				super.keyPressed(e);
 				switch (e.getKeyCode()) {
 				case KeyEvent.VK_1:
@@ -323,7 +281,7 @@ public class VoiceSelect {
 			logT = "您进行了一次点击！";
 			setTitle();
 		}
-		WriterData();
+
 		//dateSave(logT);
 	}
 
@@ -361,46 +319,6 @@ public class VoiceSelect {
 	
 	public void setTitle() {
 		mainFrame.setTitle("语音目标选择实验 : "+ areaT + logT);
-	}
-	
-	private void WriterData() {
-		File file = new File("PointData.xls");
-        try {
-            //1.读取Excel的对象
-            POIFSFileSystem poifsFileSystem = new POIFSFileSystem(new FileInputStream(file));
-            //2.Excel工作薄对象
-            HSSFWorkbook hssfWorkbook = new HSSFWorkbook(poifsFileSystem);
-            
-            //3.Excel工作表对象
-            HSSFSheet hssfSheet = hssfWorkbook.createSheet("data");
-            
-            // 创建第一行
-    		HSSFRow row0 = hssfSheet.createRow(0);
-
-    		// 设置第一行单元格高度
-    		row0.setHeight((short) 400);
-
-    		// 创建第一行第一列单元格
-    		HSSFCell cell0_1 = row0.createCell(0);
-    		// 设置单元格的值
-    		cell0_1.setCellValue("hello!");
-    		
-    		// 改变字体样式，步骤
-    		// 1.设置字体,红色
-    		HSSFFont hssfFont = hssfWorkbook.createFont();
-    		hssfFont.setColor(HSSFFont.COLOR_RED);
-
-    		// 2.设置样式
-    		HSSFCellStyle cellStyle = hssfWorkbook.createCellStyle();
-    		cellStyle.setFont(hssfFont);
-    		// 设置居中
-    		cellStyle.setAlignment(HorizontalAlignment.CENTER);
-    		// 3.单元格使用样式，设置第一行第一列单元格样式
-    		cell0_1.setCellStyle(cellStyle);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 	}
 	
 	public void readPointData(String name) {
@@ -748,8 +666,7 @@ public class VoiceSelect {
 	}
 	
 	public static void main(String[] args) {
-		new VoiceSelect();
+		new VoiceSelectTest3();
 	}
 
 }
-

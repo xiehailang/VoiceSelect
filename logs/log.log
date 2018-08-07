@@ -1,8 +1,0 @@
-2018-08-04 14:38:52  [ AWT-EventQueue-0:0 ] - [ INFO ]  get access_token success. current state: STATE_AIP_AUTH_OK
-2018-08-04 14:38:52  [ AWT-EventQueue-0:7 ] - [ DEBUG ]  current state after check priviledge: STATE_TRUE_AIP_USER
-2018-08-04 14:45:58  [ AWT-EventQueue-0:1 ] - [ INFO ]  get access_token success. current state: STATE_AIP_AUTH_OK
-2018-08-04 14:45:59  [ AWT-EventQueue-0:8 ] - [ DEBUG ]  current state after check priviledge: STATE_TRUE_AIP_USER
-2018-08-04 14:56:06  [ AWT-EventQueue-0:0 ] - [ INFO ]  get access_token success. current state: STATE_AIP_AUTH_OK
-2018-08-04 14:56:06  [ AWT-EventQueue-0:8 ] - [ DEBUG ]  current state after check priviledge: STATE_TRUE_AIP_USER
-2018-08-04 19:19:49  [ AWT-EventQueue-0:0 ] - [ INFO ]  get access_token success. current state: STATE_AIP_AUTH_OK
-2018-08-04 19:19:49  [ AWT-EventQueue-0:5 ] - [ DEBUG ]  current state after check priviledge: STATE_TRUE_AIP_USER

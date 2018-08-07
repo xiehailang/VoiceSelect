@@ -40,6 +40,7 @@ import javax.sound.sampled.TargetDataLine;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
@@ -88,7 +89,7 @@ public class VoiceSelect {
     private long recStartTime;
     private long recEndTime;
     
-    private String areaT="",logT="";
+    private String areaT="",logT="",keyT="";
     
 	private JFrame mainFrame;
 	private Container mainContentPane;
@@ -99,29 +100,56 @@ public class VoiceSelect {
 	private ArrayList<Point> pointList;
 	private ArrayList<JButton> listButton;
 
-	private Point mousePoint;
+	private Point mousePoint = null;
 	private Robot mainRbt;
 	private int layerNum = 5 ;
 	private int distanceOfEachLayer = 0;
 	private int numOfSelect;//操作步数
 	private long startTime;
 	private long endTime;
+	private int voiceNum=0;
+
+	String desktopPath=null;
+	String filePath = "data.xls";
+	String sheetName = "1";
+	// Excel文件sheet页的第一行
+	String title[] = { "序号", "开始"
+			, "语音1开始", "语音1结束", "语音1结果"
+			, "语音2开始", "语音2结束", "语音2结果"
+			, "语音3开始", "语音3结束", "语音3结果"
+			, "语音4开始", "语音4结束", "语音4结果"
+			, "语音5开始", "语音5结束", "语音5结果"
+			, "结束", "结果"};
+	// Excel文件每一列对应的数据
+	String titleDate[] = { "buttonName", "testStart", 
+			"voice1Start", "voice1End", "voice1Result",
+			"voice2Start", "voice2End", "voice2Result",
+			"voice3Start", "voice3End", "voice3Result",
+			"voice4Start", "voice4End", "voice4Result",
+			"voice5Start", "voice5End", "voice5Result",
+			"testEnd" , "testResult" };
+	Data user = new Data();
 	
 	public VoiceSelect(){
 		client = new AipSpeech(APP_ID, API_KEY, SECRET_KEY);
-		
+		setFilePath();
 		initFrame();
 		mainEvent();
 		
 	}
 	
-	public void test() {
-		String filePath = "数据汇总.xls";
-		String sheetName = "测试";
-		// Excel文件易车sheet页的第一行
-		String title[] = { "日期", "城市", "新发布车源数" };
-		// Excel文件易车每一列对应的数据
-		String titleDate[] = { "date", "city", "newPublish" };
+	public void setFilePath() {
+		String os = System.getProperty("os.name");  
+		//当前用户桌面
+		File desktopDir = FileSystemView.getFileSystemView() .getHomeDirectory();		
+		desktopPath = desktopDir.getAbsolutePath();
+		filePath = desktopPath+"/Desktop/data1.xls";
+		if(os.toLowerCase().startsWith("win")){  
+			filePath = desktopPath+"\\data1.txt";
+		}
+	}
+	
+	public void savaAllData() {
 
 		ExcelManage em = new ExcelManage();
 		// 判断该名称的文件是否存在
@@ -141,10 +169,7 @@ public class VoiceSelect {
 				e.printStackTrace();
 			}
 		}
-		Data user = new Data();
-		user.setDate("206-12-21");
-		user.setCity("北京");
-		user.setNewPublish("5");
+		
 		// 写入到excel
 		em.writeToExcel(filePath, sheetName, user, titleDate);
 
@@ -204,7 +229,7 @@ public class VoiceSelect {
 
 			}
 		}
-		areaT = "您选择了:" + keyNum + "号; ";
+		keyT = "您选择了:" + keyNum + "号; ";
 		setTitle();
 	}
 	
@@ -281,169 +306,177 @@ public class VoiceSelect {
 					paint1(9);
 					break;
 				case KeyEvent.VK_ENTER:
-					mouseClick();
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+					}
 					break;
 				case KeyEvent.VK_Z:
 					if (voiveFlag) {
-						areaT = "正在录音; ";
+						keyT = "正在录音; ";
+						logT = "";
 						setTitle();
 						recStartTime = System.currentTimeMillis();
+						voiceNum++;
+						setVoiceStartTime(voiceNum);
 						capture(); // 调用录音的方法
 						voiveFlag = false;
 					}
 					break;
 				case KeyEvent.VK_X:
-					// 停止录音
-					stopflag = true;
-					// 调用保存录音的方法
-					save();
-					recEndTime = System.currentTimeMillis();
-					voiveFlag = true;
-					areaT = "语音识别结束,耗时:"+(recEndTime - recStartTime)+" 毫秒！ "+"识别结果:"+textResult ;
-					setTitle();
-					//dateSave(areaT+"识别结果:"+textResult);
-					break;
+					if (!stopflag) {
+						// 停止录音
+						stopflag = true;
+						// 调用保存录音的方法
+						save();
+						recEndTime = System.currentTimeMillis();
+						setVoiceEndTime(voiceNum);
+						voiveFlag = true;
+						keyT = "语音识别结束,耗时:"+(recEndTime - recStartTime)+" 毫秒！;  " ;
+						logT = "识别结果为："+textResult;
+						setTitle();
+						setVoiceResult(voiceNum,textResult);
+						break;
+					}
 				}
 			}
 		});
 	}
 	
+	public void setVoiceStartTime(int num) {
+		switch (num) {
+		case 1:
+			user.setVoice1Start(String.valueOf(System.currentTimeMillis()));
+			break;
+		case 2:
+			user.setVoice2Start(String.valueOf(System.currentTimeMillis()));
+			break;
+		case 3:
+			user.setVoice3Start(String.valueOf(System.currentTimeMillis()));
+			break;
+		case 4:
+			user.setVoice4Start(String.valueOf(System.currentTimeMillis()));
+			break;
+		case 5:
+			user.setVoice5Start(String.valueOf(System.currentTimeMillis()));
+			break;
+		}
+	}
+	public void setVoiceEndTime(int num) {
+		switch (num) {
+		case 1:
+			user.setVoice1End(String.valueOf(System.currentTimeMillis()));
+			break;
+		case 2:
+			user.setVoice2End(String.valueOf(System.currentTimeMillis()));
+			break;
+		case 3:
+			user.setVoice3End(String.valueOf(System.currentTimeMillis()));
+			break;
+		case 4:
+			user.setVoice4End(String.valueOf(System.currentTimeMillis()));
+			break;
+		case 5:
+			user.setVoice5End(String.valueOf(System.currentTimeMillis()));
+			break;
+		}
+	}
+	public void setVoiceResult(int num,String result) {
+		switch (num) {
+		case 1:
+			user.setVoice1Result(result);
+			break;
+		case 2:
+			user.setVoice2Result(result);
+			break;
+		case 3:
+			user.setVoice3Result(result);
+			break;
+		case 4:
+			user.setVoice4Result(result);
+			break;
+		case 5:
+			user.setVoice5Result(result);
+			break;
+		}
+	}
+	
 	// 实现模拟鼠标点击
 	public void mouseClick() {
-
+		
 		Rectangle rectangle = listButton.get(0).getBounds();
 		Point point = new Point(mousePoint.x, mousePoint.y);
 		SwingUtilities.convertPointFromScreen(point, selectPanel);
 		if (rectangle.contains(point)) {
-			areaT="";
+			keyT="";
 			logT = "您点中了目标！";
+			user.setTestResult(true);
 			setTitle();
 		}else {
-			areaT="";
+			keyT="";
 			logT = "您进行了一次点击！";
+			user.setTestResult(false);
 			setTitle();
 		}
-		WriterData();
-		//dateSave(logT);
 	}
 
-	// 将数据保存进文档
-	public void dateSave(String data) {
-		String os = System.getProperty("os.name");  
-		FileWriter fw = null;
-		try {
-			//当前用户桌面
-			File desktopDir = FileSystemView.getFileSystemView() .getHomeDirectory();
-			String desktopPath = desktopDir.getAbsolutePath();
-			// 如果文件存在，则追加内容；如果文件不存在，则创建文件
-			File f = new File(desktopPath+"/data1.txt");;
-			if(os.toLowerCase().startsWith("win")){  
-				f = new File(desktopPath+"\\data1.txt");
-			}
-			if (!(f.exists())) {
-				f.createNewFile();
-			}
-			fw = new FileWriter(f, true);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		PrintWriter pw = new PrintWriter(fw);
-		pw.println(data);
-		pw.flush();
-		try {
-			fw.flush();
-			pw.close();
-			fw.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 	
 	public void setTitle() {
-		mainFrame.setTitle("语音目标选择实验 : "+ areaT + logT);
+		mainFrame.setTitle("目标选择实验 : "+ areaT + keyT +logT);
 	}
 	
-	private void WriterData() {
-		File file = new File("PointData.xls");
-        try {
-            //1.读取Excel的对象
-            POIFSFileSystem poifsFileSystem = new POIFSFileSystem(new FileInputStream(file));
-            //2.Excel工作薄对象
-            HSSFWorkbook hssfWorkbook = new HSSFWorkbook(poifsFileSystem);
-            
-            //3.Excel工作表对象
-            HSSFSheet hssfSheet = hssfWorkbook.createSheet("data");
-            
-            // 创建第一行
-    		HSSFRow row0 = hssfSheet.createRow(0);
-
-    		// 设置第一行单元格高度
-    		row0.setHeight((short) 400);
-
-    		// 创建第一行第一列单元格
-    		HSSFCell cell0_1 = row0.createCell(0);
-    		// 设置单元格的值
-    		cell0_1.setCellValue("hello!");
-    		
-    		// 改变字体样式，步骤
-    		// 1.设置字体,红色
-    		HSSFFont hssfFont = hssfWorkbook.createFont();
-    		hssfFont.setColor(HSSFFont.COLOR_RED);
-
-    		// 2.设置样式
-    		HSSFCellStyle cellStyle = hssfWorkbook.createCellStyle();
-    		cellStyle.setFont(hssfFont);
-    		// 设置居中
-    		cellStyle.setAlignment(HorizontalAlignment.CENTER);
-    		// 3.单元格使用样式，设置第一行第一列单元格样式
-    		cell0_1.setCellStyle(cellStyle);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-	}
 	
-	public void readPointData(String name) {
-		File file = new File("PointData.xls");
+	public Boolean readPointData(String name) {
+		Boolean flag = false;
+		String os = System.getProperty("os.name");  
+		File file = new File(desktopPath+"/Desktop/PointData.xls");
+		if(os.toLowerCase().startsWith("win")){  
+			file = new File(desktopPath+"\\PointData.txt");
+		}
 		pointList = new ArrayList<Point>();
         try {
             //1.读取Excel的对象
             POIFSFileSystem poifsFileSystem = new POIFSFileSystem(new FileInputStream(file));
             //2.Excel工作薄对象
             HSSFWorkbook hssfWorkbook = new HSSFWorkbook(poifsFileSystem);
-            
             //3.Excel工作表对象
             HSSFSheet hssfSheet = hssfWorkbook.getSheet(name);
-            
-            //总行数
-            int rowLength = hssfSheet.getLastRowNum()+1;
- 
-            for (int i = 0; i < rowLength; i++) {
-                //获取Excel工作表的行对象
-                HSSFRow hssfRow = hssfSheet.getRow(i);
-                
-                int x=0,y=0;
-                //获取指定单元格
-                HSSFCell hssfCell1 = hssfRow.getCell(0);
-                HSSFCell hssfCell2 = hssfRow.getCell(1);
-                
-                //Excel数据Cell有不同的类型，当我们试图从一个数字类型的Cell读取出一个字符串时就有可能报异常：
-                //Cannot get a STRING value from a NUMERIC cell
-                //将所有的需要读的Cell表格设置为String格式
-                if (hssfCell1 != null) {
-                    hssfCell1.setCellType(CellType.STRING);
+            if (hssfSheet!=null) {
+                //总行数
+                int rowLength = hssfSheet.getLastRowNum()+1;
+     
+                for (int i = 0; i < rowLength; i++) {
+                    //获取Excel工作表的行对象
+                    HSSFRow hssfRow = hssfSheet.getRow(i);
+                    
+                    int x=0,y=0;
+                    //获取指定单元格
+                    HSSFCell hssfCell1 = hssfRow.getCell(0);
+                    HSSFCell hssfCell2 = hssfRow.getCell(1);
+                    
+                    //Excel数据Cell有不同的类型，当我们试图从一个数字类型的Cell读取出一个字符串时就有可能报异常：
+                    //Cannot get a STRING value from a NUMERIC cell
+                    //将所有的需要读的Cell表格设置为String格式
+                    if (hssfCell1 != null) {
+                        hssfCell1.setCellType(CellType.STRING);
+                    }
+                    if (hssfCell2 != null) {
+                        hssfCell2.setCellType(CellType.STRING);
+                    }
+                    x = Integer.parseInt(hssfCell1.getStringCellValue());
+                    y = Integer.parseInt(hssfCell2.getStringCellValue());
+                    pointList.add(i, new Point(x, y));
                 }
-                if (hssfCell2 != null) {
-                    hssfCell2.setCellType(CellType.STRING);
-                }
-                x = Integer.parseInt(hssfCell1.getStringCellValue());
-                y = Integer.parseInt(hssfCell2.getStringCellValue());
-                pointList.add(i, new Point(x, y));
-                
-            }
+                flag = true;
+			}else {
+				JOptionPane.showMessageDialog(new JFrame().getContentPane(), "不存在"+name+"，请检查PointData文件！", "系统信息", JOptionPane.QUESTION_MESSAGE); 
+			}
+
         } catch (IOException e) {
-            e.printStackTrace();
+        	JOptionPane.showMessageDialog(new JFrame().getContentPane(), e, "系统信息", JOptionPane.QUESTION_MESSAGE); 
         }
+        return flag;
 	}
 	
 	public void initFrame() {
@@ -472,11 +505,16 @@ public class VoiceSelect {
 		button1.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				readPointData("button1");
-				addBtnToPanel();
-				mainFrame.requestFocus();
-				enter();
-
+				if (readPointData("button1")) {
+					areaT="实验1； ";
+					setTitle();
+					voiceNum=0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("1");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+				}
 			}
 		});
 		button2 = new JButton("2");
@@ -484,10 +522,16 @@ public class VoiceSelect {
 		button2.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				readPointData("button2");
-				addBtnToPanel();
-				mainFrame.requestFocus();
-				enter();
+				if (readPointData("button2")) {
+					areaT = "实验2； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("2");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+				}
 			}
 		});
 		button3 = new JButton("3");
@@ -495,10 +539,16 @@ public class VoiceSelect {
 		button3.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				readPointData("button3");
-				addBtnToPanel();
-				mainFrame.requestFocus();
-				enter();
+				if (readPointData("button3")) {
+					areaT = "实验3； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("3");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+				}
 			}
 		});
 		button4 = new JButton("4");
@@ -506,10 +556,16 @@ public class VoiceSelect {
 		button4.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				readPointData("button4");
-				addBtnToPanel();
-				mainFrame.requestFocus();
-				enter();
+				if (readPointData("button4")) {
+					areaT = "实验4； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("4");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+				}
 			}
 		});
 		button5 = new JButton("5");
@@ -517,10 +573,16 @@ public class VoiceSelect {
 		button5.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				readPointData("button5");
-				addBtnToPanel();
-				mainFrame.requestFocus();
-				enter();
+				if (readPointData("button5")) {
+					areaT = "实验5； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("5");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+				}
 			}
 		});
 		

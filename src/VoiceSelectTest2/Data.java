@@ -21,8 +21,15 @@ public class Data {
     private String voice5Start = "";
     private String voice5End = "";
     private String voice5Result = "";
+    private String numOfSelect= "";
     
-    public String getButtonName() {
+    public String getNumOfSelect() {
+		return numOfSelect;
+	}
+	public void setNumOfSelect(String numOfSelect) {
+		this.numOfSelect = numOfSelect;
+	}
+	public String getButtonName() {
 		return buttonName;
 	}
 	public void setButtonName(String buttonName) {

@@ -112,14 +112,13 @@ public class VoiceSelectTest2 {
 	String desktopPath=null;
 	String filePath = "data.xls";
 	String sheetName = "1";
-	// Excel文件sheet页的第一行
 	String title[] = { "序号", "开始"
 			, "语音1开始", "语音1结束", "语音1结果"
 			, "语音2开始", "语音2结束", "语音2结果"
 			, "语音3开始", "语音3结束", "语音3结果"
 			, "语音4开始", "语音4结束", "语音4结果"
 			, "语音5开始", "语音5结束", "语音5结果"
-			, "结束", "结果"};
+			, "结束", "结果","步数"};
 	// Excel文件每一列对应的数据
 	String titleDate[] = { "buttonName", "testStart", 
 			"voice1Start", "voice1End", "voice1Result",
@@ -127,7 +126,7 @@ public class VoiceSelectTest2 {
 			"voice3Start", "voice3End", "voice3Result",
 			"voice4Start", "voice4End", "voice4Result",
 			"voice5Start", "voice5End", "voice5Result",
-			"testEnd" , "testResult" };
+			"testEnd" , "testResult","numOfSelect"};
 	Data user = new Data();
 	
 	public VoiceSelectTest2(){
@@ -143,9 +142,9 @@ public class VoiceSelectTest2 {
 		//当前用户桌面
 		File desktopDir = FileSystemView.getFileSystemView() .getHomeDirectory();		
 		desktopPath = desktopDir.getAbsolutePath();
-		filePath = desktopPath+"/Desktop/data1.xls";
+		filePath = desktopPath+"/Desktop/data2.xls";
 		if(os.toLowerCase().startsWith("win")){  
-			filePath = desktopPath+"\\data1.txt";
+			filePath = desktopPath+"\\data2.txt";
 		}
 	}
 	
@@ -216,22 +215,128 @@ public class VoiceSelectTest2 {
 				layerNum++;
 				//进行下一级操作的准备：设置层次、距离，画出预选点
 				setLayerDistance();
-				paintNine();
+				paintNine2();
+				selectButton();
 			}else {
 				layerNum++;
-				// 让panel上的图形消失
-				Point myPoint = new Point(mousePoint.x,mousePoint.y);
-				SwingUtilities.convertPointFromScreen(myPoint, selectPanel);
-				Graphics graphics = selectPanel.getGraphics();
-				selectPanel.paint(graphics);
-				graphics.setColor(Color.BLUE);
-				graphics.fillOval(myPoint.x- 2,myPoint.y- 2, 6, 6);
-
+				
+				// 需要将distanceOfEachLayer再减一层才能只包含最后一个按钮
+				selectButtonTest();
 			}
 		}
-		keyT = "您选择了:" + keyNum + "号; ";
+		areaT = "您选择了:" + keyNum + "号; ";
 		setTitle();
 	}
+	
+	// 改bug加入的函数：解决distanceOfEachLayer不够小的问题
+	public void selectButtonTest() {
+		
+		// 让panel上的图形消失
+		Graphics graphics = selectPanel.getGraphics();
+		selectPanel.paint(graphics);
+		
+		distanceOfEachLayer = frameWidth/3/3/3/3;
+		// 得出选中的区域
+		Point myPoint = new Point(mousePoint.x,mousePoint.y);
+		SwingUtilities.convertPointFromScreen(myPoint, selectPanel);
+		int mX = myPoint.x;
+		int mY = myPoint.y;
+		Rectangle rect = new Rectangle();
+		rect.setBounds(mX - distanceOfEachLayer*3/2, mY - distanceOfEachLayer*3/2, distanceOfEachLayer*3, distanceOfEachLayer*3);
+		
+		// 筛选出区域中的按钮
+		for (int index=1 ;index < listButton.size() ;index++ ) {
+			Rectangle rectButton = listButton.get(index).getBounds();
+			Point one = new Point(rectButton.x, rectButton.y);
+			Point two = new Point(rectButton.x + rectButton.width, rectButton.y);
+			Point three = new Point(rectButton.x, rectButton.y + rectButton.height);
+			Point four = new Point(rectButton.x + rectButton.width, rectButton.y + rectButton.height);
+			if (rect.contains(one)||rect.contains(two)||rect.contains(three)||rect.contains(four)) {
+				listButton.get(index).setBackground(Color.LIGHT_GRAY);
+			}else {
+				listButton.get(index).setBackground(Color.WHITE);
+			}
+		}
+		
+		graphics.setColor(Color.BLUE);
+		//外边框
+		graphics.drawLine(mX - distanceOfEachLayer*3/2, mY - distanceOfEachLayer*3/2, mX + distanceOfEachLayer*3/2, mY - distanceOfEachLayer*3/2);
+		graphics.drawLine(mX - distanceOfEachLayer*3/2, mY - distanceOfEachLayer*3/2, mX - distanceOfEachLayer*3/2, mY + distanceOfEachLayer*3/2);
+		graphics.drawLine(mX + distanceOfEachLayer*3/2, mY + distanceOfEachLayer*3/2, mX + distanceOfEachLayer*3/2, mY - distanceOfEachLayer*3/2);
+		graphics.drawLine(mX + distanceOfEachLayer*3/2, mY + distanceOfEachLayer*3/2, mX - distanceOfEachLayer*3/2, mY + distanceOfEachLayer*3/2);
+
+	}
+	
+	
+	// 实现选中区域内的按钮
+	public void selectButton() {
+		// 得出选中的区域
+		Point myPoint = new Point(mousePoint.x,mousePoint.y);
+		SwingUtilities.convertPointFromScreen(myPoint, selectPanel);
+		int mX = myPoint.x;
+		int mY = myPoint.y;
+		Rectangle rect = new Rectangle();
+		rect.setBounds(mX - distanceOfEachLayer*3/2, mY - distanceOfEachLayer*3/2, distanceOfEachLayer*3, distanceOfEachLayer*3);
+		
+		// 筛选出区域中的按钮
+		for (int index=1 ;index < listButton.size() ;index++ ) {
+			Rectangle rectButton = listButton.get(index).getBounds();
+			Point one = new Point(rectButton.x, rectButton.y);
+			Point two = new Point(rectButton.x + rectButton.width, rectButton.y);
+			Point three = new Point(rectButton.x, rectButton.y + rectButton.height);
+			Point four = new Point(rectButton.x + rectButton.width, rectButton.y + rectButton.height);
+			if (rect.contains(one)||rect.contains(two)||rect.contains(three)||rect.contains(four)) {
+				listButton.get(index).setBackground(Color.LIGHT_GRAY);
+			}else {
+				listButton.get(index).setBackground(Color.WHITE);
+			}
+		}
+		
+	}
+	
+	// 依据mousePoint和distanceOfEachLayer画出九个区域的中心点（每个区域带边框）
+	public void paintNine2() {
+		Point myPoint = new Point(mousePoint.x,mousePoint.y);
+		SwingUtilities.convertPointFromScreen(myPoint, selectPanel);
+		int mX = myPoint.x;
+		int mY = myPoint.y;
+		Graphics graphics = selectPanel.getGraphics();
+		selectPanel.paint(graphics);
+		
+		graphics.setColor(Color.BLUE);
+		graphics.fillOval(mX - distanceOfEachLayer - 2, mY - distanceOfEachLayer - 2 , 4, 4);
+		graphics.fillOval(mX - 2, mY - distanceOfEachLayer - 2 , 4, 4);
+		graphics.fillOval(mX + distanceOfEachLayer - 2, mY - distanceOfEachLayer- 2, 4, 4);
+		graphics.fillOval(mX - distanceOfEachLayer - 2, mY - 2, 4, 4);
+		graphics.fillOval(mX- 2,mY- 2, 4, 4);
+		graphics.fillOval(mX + distanceOfEachLayer - 2, mY - 2, 4, 4);
+		graphics.fillOval(mX - distanceOfEachLayer - 2, mY + distanceOfEachLayer- 2, 4, 4);
+		graphics.fillOval(mX - 2, mY + distanceOfEachLayer- 2, 4, 4);
+		graphics.fillOval(mX + distanceOfEachLayer - 2, mY + distanceOfEachLayer- 2, 4, 4);
+		
+		graphics.drawString("1",mX - distanceOfEachLayer , mY - distanceOfEachLayer);
+		graphics.drawString("2",mX , mY - distanceOfEachLayer);
+		graphics.drawString("3",mX + distanceOfEachLayer , mY - distanceOfEachLayer);
+		graphics.drawString("4",mX - distanceOfEachLayer , mY );
+		graphics.drawString("5",mX , mY );
+		graphics.drawString("6",mX + distanceOfEachLayer , mY );
+		graphics.drawString("7",mX - distanceOfEachLayer , mY + distanceOfEachLayer);
+		graphics.drawString("8",mX , mY + distanceOfEachLayer);
+		graphics.drawString("9",mX + distanceOfEachLayer , mY + distanceOfEachLayer);
+		
+		//内 竖线
+		graphics.drawLine(mX - distanceOfEachLayer*3/2, mY - distanceOfEachLayer/2, mX + distanceOfEachLayer*3/2, mY - distanceOfEachLayer/2);
+		graphics.drawLine(mX - distanceOfEachLayer*3/2, mY + distanceOfEachLayer/2, mX + distanceOfEachLayer*3/2, mY + distanceOfEachLayer/2);
+		graphics.drawLine(mX - distanceOfEachLayer/2, mY - distanceOfEachLayer*3/2, mX - distanceOfEachLayer/2, mY + distanceOfEachLayer*3/2);
+		graphics.drawLine(mX + distanceOfEachLayer/2, mY - distanceOfEachLayer*3/2, mX + distanceOfEachLayer/2, mY + distanceOfEachLayer*3/2);
+		//外边框
+		graphics.drawLine(mX - distanceOfEachLayer*3/2, mY - distanceOfEachLayer*3/2, mX + distanceOfEachLayer*3/2, mY - distanceOfEachLayer*3/2);
+		graphics.drawLine(mX - distanceOfEachLayer*3/2, mY - distanceOfEachLayer*3/2, mX - distanceOfEachLayer*3/2, mY + distanceOfEachLayer*3/2);
+		graphics.drawLine(mX + distanceOfEachLayer*3/2, mY + distanceOfEachLayer*3/2, mX + distanceOfEachLayer*3/2, mY - distanceOfEachLayer*3/2);
+		graphics.drawLine(mX + distanceOfEachLayer*3/2, mY + distanceOfEachLayer*3/2, mX - distanceOfEachLayer*3/2, mY + distanceOfEachLayer*3/2);
+		
+	}
+	
 	
 	// 计算下一级鼠标位置
 	public void mouseMoveToNext(int keyNumber) {
@@ -404,21 +509,27 @@ public class VoiceSelectTest2 {
 	
 	// 实现模拟鼠标点击
 	public void mouseClick() {
+		boolean test = true;
+		for (int index=1 ;index < listButton.size() ;index++ ) {
+			if (listButton.get(index).getBackground( )== Color.LIGHT_GRAY) {
+				test = false;
+			}
+		}
 		
-		Rectangle rectangle = listButton.get(0).getBounds();
-		Point point = new Point(mousePoint.x, mousePoint.y);
-		SwingUtilities.convertPointFromScreen(point, selectPanel);
-		if (rectangle.contains(point)) {
+		if (test) {
 			keyT="";
 			logT = "您点中了目标！";
 			user.setTestResult(true);
+			user.setNumOfSelect(String.valueOf(numOfSelect));
 			setTitle();
 		}else {
 			keyT="";
 			logT = "您进行了一次点击！";
 			user.setTestResult(false);
+			user.setNumOfSelect(String.valueOf(numOfSelect));
 			setTitle();
 		}
+
 	}
 
 	
@@ -600,13 +711,16 @@ public class VoiceSelectTest2 {
 	}
 	
 	public void enter() {
+
 		mousePoint =  new Point(frameWidth/2,frameWidth/2);//计算出frame中心坐标
 		SwingUtilities.convertPointToScreen(mousePoint, selectPanel);//转化成frame的坐标系
-		//moveMouse(mousePoint);//移动鼠标
+
 		layerNum = 0;
 		setLayerDistance();
-		paintNine();//画标记
+		paintNine2();//画标记
+		selectButton();
 		numOfSelect = 0;
+
 		setTitle();
 	}
 	
@@ -623,41 +737,6 @@ public class VoiceSelectTest2 {
 			distanceOfEachLayer = frameWidth/3/3/3;
 			break;
 		}
-	}
-	
-	// 依据mousePoint和distanceOfEachLayer画出九个区域的中心点
-	public void paintNine() {
-		Point myPoint = new Point(mousePoint.x,mousePoint.y);
-		SwingUtilities.convertPointFromScreen(myPoint, selectPanel);
-		int mX = myPoint.x;
-		int mY = myPoint.y;
-		Graphics graphics = selectPanel.getGraphics();
-		selectPanel.paint(graphics);
-		
-		int size = 6;
-		graphics.setColor(Color.BLUE);
-		graphics.fillOval(mX- 2,mY- 2, size, size);
-		graphics.drawString("5",mX , mY );
-		
-		graphics.setColor(Color.BLACK);
-		graphics.fillOval(mX - distanceOfEachLayer - 2, mY - distanceOfEachLayer - 2 , size, size);
-		graphics.fillOval(mX - 2, mY - distanceOfEachLayer - 2 , size, size);
-		graphics.fillOval(mX + distanceOfEachLayer - 2, mY - distanceOfEachLayer- 2, size, size);
-		graphics.fillOval(mX - distanceOfEachLayer - 2, mY - 2, size,size);
-		graphics.fillOval(mX + distanceOfEachLayer - 2, mY - 2, size, size);
-		graphics.fillOval(mX - distanceOfEachLayer - 2, mY + distanceOfEachLayer- 2, size, size);
-		graphics.fillOval(mX - 2, mY + distanceOfEachLayer- 2, size, size);
-		graphics.fillOval(mX + distanceOfEachLayer - 2, mY + distanceOfEachLayer- 2, size, size);
-		
-		graphics.drawString("1",mX - distanceOfEachLayer , mY - distanceOfEachLayer);
-		graphics.drawString("2",mX , mY - distanceOfEachLayer);
-		graphics.drawString("3",mX + distanceOfEachLayer , mY - distanceOfEachLayer);
-		graphics.drawString("4",mX - distanceOfEachLayer , mY );
-		graphics.drawString("6",mX + distanceOfEachLayer , mY );
-		graphics.drawString("7",mX - distanceOfEachLayer , mY + distanceOfEachLayer);
-		graphics.drawString("8",mX , mY + distanceOfEachLayer);
-		graphics.drawString("9",mX + distanceOfEachLayer , mY + distanceOfEachLayer);
-		
 	}
 	
 	// 将鼠标移动到点

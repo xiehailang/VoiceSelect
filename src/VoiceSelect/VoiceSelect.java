@@ -119,7 +119,7 @@ public class VoiceSelect {
 			, "语音3开始", "语音3结束", "语音3结果"
 			, "语音4开始", "语音4结束", "语音4结果"
 			, "语音5开始", "语音5结束", "语音5结果"
-			, "结束", "结果"};
+			, "结束", "结果","步数"};
 	// Excel文件每一列对应的数据
 	String titleDate[] = { "buttonName", "testStart", 
 			"voice1Start", "voice1End", "voice1Result",
@@ -127,7 +127,7 @@ public class VoiceSelect {
 			"voice3Start", "voice3End", "voice3Result",
 			"voice4Start", "voice4End", "voice4Result",
 			"voice5Start", "voice5End", "voice5Result",
-			"testEnd" , "testResult" };
+			"testEnd" , "testResult","numOfSelect"};
 	Data user = new Data();
 	
 	public VoiceSelect(){
@@ -412,11 +412,13 @@ public class VoiceSelect {
 			keyT="";
 			logT = "您点中了目标！";
 			user.setTestResult(true);
+			user.setNumOfSelect(String.valueOf(numOfSelect));
 			setTitle();
 		}else {
 			keyT="";
 			logT = "您进行了一次点击！";
 			user.setTestResult(false);
+			user.setNumOfSelect(String.valueOf(numOfSelect));
 			setTitle();
 		}
 	}

@@ -119,7 +119,7 @@ public class VoiceSelectTest3 {
 			, "语音3开始", "语音3结束", "语音3结果"
 			, "语音4开始", "语音4结束", "语音4结果"
 			, "语音5开始", "语音5结束", "语音5结果"
-			, "结束", "结果"};
+			, "结束", "结果","步数"};
 	// Excel文件每一列对应的数据
 	String titleDate[] = { "buttonName", "testStart", 
 			"voice1Start", "voice1End", "voice1Result",
@@ -127,7 +127,7 @@ public class VoiceSelectTest3 {
 			"voice3Start", "voice3End", "voice3Result",
 			"voice4Start", "voice4End", "voice4Result",
 			"voice5Start", "voice5End", "voice5Result",
-			"testEnd" , "testResult" };
+			"testEnd" , "testResult","numOfSelect"};
 	Data user = new Data();
 	
 	public VoiceSelectTest3(){
@@ -143,9 +143,9 @@ public class VoiceSelectTest3 {
 		//当前用户桌面
 		File desktopDir = FileSystemView.getFileSystemView() .getHomeDirectory();		
 		desktopPath = desktopDir.getAbsolutePath();
-		filePath = desktopPath+"/Desktop/data1.xls";
+		filePath = desktopPath+"/Desktop/data3.xls";
 		if(os.toLowerCase().startsWith("win")){  
-			filePath = desktopPath+"\\data1.txt";
+			filePath = desktopPath+"\\data3.txt";
 		}
 	}
 	
@@ -180,58 +180,126 @@ public class VoiceSelectTest3 {
 		if ( textResult != null) {
 			logT = "识别结果："+textResult;
 			setTitle();
-			if (textResult.contains("一")||textResult.contains("1")) {
-				paint1(1);
-			}else if (textResult.contains("二")||textResult.contains("2")) {
-				paint1(2);
-			}else if (textResult.contains("三")||textResult.contains("3")) {
-				paint1(3);
-			}else if (textResult.contains("四")||textResult.contains("4")) {
-				paint1(4);
-			}else if (textResult.contains("五")||textResult.contains("5")) {
-				paint1(5);
-			}else if (textResult.contains("六")||textResult.contains("6")) {
-				paint1(6);
-			}else if (textResult.contains("七")||textResult.contains("7")) {
-				paint1(7);
-			}else if (textResult.contains("八")||textResult.contains("8")) {
-				paint1(8);
-			}else if (textResult.contains("九")||textResult.contains("9")) {
-				paint1(9);	
+			if (textResult.contains("上")) {
+				keyOri(3);
+			}else if (textResult.contains("下")) {
+				keyOri(4);
+			}else if (textResult.contains("左")) {
+				keyOri(1);
+			}else if (textResult.contains("右")) {
+				keyOri(2);
 			}
 		}else {
 			logT = "语音识别出错";
 			setTitle();
 		}
 	}
-		
-	public void paint1(int keyNum) {
-		if (layerNum < 3) {
-			mouseMoveToNext(keyNum);
-			numOfSelect++;
-			if (numOfSelect == 1) {
-				startTime = System.currentTimeMillis();
-			}
-			if (layerNum < 2) {
-				layerNum++;
-				//进行下一级操作的准备：设置层次、距离，画出预选点
-				setLayerDistance();
-				paintNine();
-			}else {
-				layerNum++;
-				// 让panel上的图形消失
-				Point myPoint = new Point(mousePoint.x,mousePoint.y);
-				SwingUtilities.convertPointFromScreen(myPoint, selectPanel);
-				Graphics graphics = selectPanel.getGraphics();
-				selectPanel.paint(graphics);
-				graphics.setColor(Color.BLUE);
-				graphics.fillOval(myPoint.x- 2,myPoint.y- 2, 6, 6);
+	
+	// 上下左右键盘的操作函数
+	public void keyOri(int orientation) {
 
-			}
+		mouseMoveBtn(orientation);
+		paintFlag();
+		numOfSelect++;
+		if (numOfSelect == 1) {
+			startTime = System.currentTimeMillis();
 		}
-		keyT = "您选择了:" + keyNum + "号; ";
+
+		switch (orientation) {
+		case 1:
+			keyT = "您按下了左键; ";
+			break;
+		case 2:
+			keyT = "您按下了右键; ";
+			break;
+		case 3:
+			keyT = "您按下了上键; ";
+			break;
+		case 4:
+			keyT = "您按下了下键; ";
+			break;
+		}
 		setTitle();
 	}
+	
+	// 判断按钮位置，移动鼠标指针到按钮中心  
+	public void mouseMoveBtn(int orientation) {
+		Point myPoint = new Point(mousePoint.x,mousePoint.y);
+		SwingUtilities.convertPointFromScreen(myPoint, selectPanel);
+		int mouseInAreaX = myPoint.x;
+		int mouseInAreaY = myPoint.y;
+		Rectangle rect;
+		int rectX,rectY,rectH,rectW;
+		int distance,cpn=1000,obj = 100;
+		for (int index=0 ;index < listButton.size() ;index++ ) {
+			rect = listButton.get(index).getBounds();
+			rectX = rect.x;
+			rectY = rect.y;
+			rectW = rect.width;
+			rectH = rect.height;
+			switch (orientation) {
+			case 1:
+				if( ( rectX + rectW/2 ) < mouseInAreaX) {
+					if( rectY > (mouseInAreaY - rectH - rectH/2) && rectY < (mouseInAreaY + rectH/2) ) {
+						distance = mouseInAreaX - rectX;
+						if (distance < cpn) {
+							cpn = distance;
+							obj = index;
+						}
+					}
+				}
+				break;
+			case 2:
+				if( ( rectX + rectW/2 ) > mouseInAreaX) {
+					if( rectY > (mouseInAreaY - rectH - rectH/2) && rectY < (mouseInAreaY + rectH/2) ) {
+						distance = rectX - mouseInAreaX;
+						if (distance < cpn) {
+							cpn = distance;
+							obj = index;
+						}
+					}
+				}
+				break;
+			case 3:
+				if( ( rectY + rectH/2 ) < mouseInAreaY) {
+					if (rectX > (mouseInAreaX - rectW -rectW/2) && rectX < (mouseInAreaX + rectW/2)) {
+						distance = mouseInAreaY - rectY;
+						if (distance < cpn) {
+							cpn = distance;
+							obj = index;
+						}
+					}
+				}
+				break;
+			case 4:
+				if( ( rectY + rectH/2 ) > mouseInAreaY) {
+					if (rectX > (mouseInAreaX - rectW -rectW/2) && rectX < (mouseInAreaX + rectW/2)) {
+						distance = rectY - mouseInAreaY;
+						if (distance < cpn) {
+							cpn = distance;
+							obj = index;
+						}
+					}
+				}
+				break;
+			}
+		}
+		
+		if (cpn != 1000 && obj != 100) {
+			//计算返回的鼠标位置（在屏幕中的位置）
+			rect = listButton.get(obj).getBounds();
+			rectX = rect.x;
+			rectY = rect.y;
+			rectW = rect.width;
+			rectH = rect.height;
+			Point point = new Point(rectX + rectW/2,rectY + rectH/2);
+			SwingUtilities.convertPointToScreen(point, selectPanel);
+			logT = "移动到：("+point.x+","+point.y+")";
+			mousePoint = point;
+			
+		}
+	}
+	
 	
 	// 计算下一级鼠标位置
 	public void mouseMoveToNext(int keyNumber) {
@@ -278,32 +346,17 @@ public class VoiceSelectTest3 {
 			public void keyPressed(KeyEvent e) {
 				super.keyPressed(e);
 				switch (e.getKeyCode()) {
-				case KeyEvent.VK_1:
-					paint1(1);
+				case KeyEvent.VK_LEFT:
+					keyOri(1);
 					break;
-				case KeyEvent.VK_2:
-					paint1(2);
+				case KeyEvent.VK_RIGHT:
+					keyOri(2);
 					break;
-				case KeyEvent.VK_3:
-					paint1(3);
+				case KeyEvent.VK_UP:
+					keyOri(3);
 					break;
-				case KeyEvent.VK_4:
-					paint1(4);
-					break;
-				case KeyEvent.VK_5:
-					paint1(5);
-					break;
-				case KeyEvent.VK_6:
-					paint1(6);
-					break;
-				case KeyEvent.VK_7:
-					paint1(7);
-					break;
-				case KeyEvent.VK_8:
-					paint1(8);
-					break;
-				case KeyEvent.VK_9:
-					paint1(9);
+				case KeyEvent.VK_DOWN:
+					keyOri(4);
 					break;
 				case KeyEvent.VK_ENTER:
 					if (mousePoint!=null) {
@@ -412,11 +465,13 @@ public class VoiceSelectTest3 {
 			keyT="";
 			logT = "您点中了目标！";
 			user.setTestResult(true);
+			user.setNumOfSelect(String.valueOf(numOfSelect));
 			setTitle();
 		}else {
 			keyT="";
 			logT = "您进行了一次点击！";
 			user.setTestResult(false);
+			user.setNumOfSelect(String.valueOf(numOfSelect));
 			setTitle();
 		}
 	}
@@ -507,6 +562,7 @@ public class VoiceSelectTest3 {
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button1")) {
 					areaT="实验1； ";
+					logT="";
 					setTitle();
 					voiceNum=0;
 					addBtnToPanel();
@@ -524,6 +580,7 @@ public class VoiceSelectTest3 {
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button2")) {
 					areaT = "实验2； ";
+					logT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -541,6 +598,7 @@ public class VoiceSelectTest3 {
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button3")) {
 					areaT = "实验3； ";
+					logT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -558,6 +616,7 @@ public class VoiceSelectTest3 {
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button4")) {
 					areaT = "实验4； ";
+					logT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -575,6 +634,7 @@ public class VoiceSelectTest3 {
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button5")) {
 					areaT = "实验5； ";
+					logT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -600,16 +660,32 @@ public class VoiceSelectTest3 {
 	}
 	
 	public void enter() {
+
 		mousePoint =  new Point(frameWidth/2,frameWidth/2);//计算出frame中心坐标
 		SwingUtilities.convertPointToScreen(mousePoint, selectPanel);//转化成frame的坐标系
-		//moveMouse(mousePoint);//移动鼠标
 		layerNum = 0;
 		setLayerDistance();
-		paintNine();//画标记
+		paintFlag();//画标记
 		numOfSelect = 0;
+
 		setTitle();
 	}
 	
+	public void paintFlag() {
+		Point myPoint = new Point(mousePoint.x,mousePoint.y);
+		SwingUtilities.convertPointFromScreen(myPoint, selectPanel);
+		int mX = myPoint.x;
+		int mY = myPoint.y;
+		Graphics graphics = selectPanel.getGraphics();
+		selectPanel.paint(graphics);
+		graphics.setColor(Color.RED);
+
+		graphics.drawLine(mX,mY,mX,mY-1000);
+		graphics.drawLine(mX,mY,mX,mY+1000);
+		graphics.drawLine(mX,mY,mX-1000,mY);
+		graphics.drawLine(mX,mY,mX+1000,mY);
+		
+	}
 	// 计算每层(0-3)深度所需的距离
 	public void setLayerDistance() {
 		switch (layerNum) {

@@ -1,44 +1,18 @@
 package GetPointData;
 
-import java.awt.AWTException;
-import java.awt.BorderLayout;
-import java.awt.Button;
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
-import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.Robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Random;
-
-import javax.sound.sampled.AudioFileFormat;
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.SourceDataLine;
-import javax.sound.sampled.TargetDataLine;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -49,25 +23,6 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.MouseInputAdapter;
 import javax.swing.filechooser.FileSystemView;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFName;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.apache.poi.ss.formula.functions.Index;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.Row;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import com.baidu.aip.speech.AipSpeech;
-
 
 public class GetPointData {
     
@@ -75,7 +30,8 @@ public class GetPointData {
     
 	private JFrame mainFrame;
 	private Container mainContentPane;
-	private JPanel mainPanel,selectPanel;
+	private JPanel mainPanel;
+	private SelectPanel selectPanel;
 	private int frameWidth = 900,frameHeight = 900;//区域大小
 	private JButton button1,button2,button3, button4;
 	private Point point = new Point(0, 0); // 坐标点
@@ -151,7 +107,7 @@ public class GetPointData {
 		mainContentPane = mainFrame.getContentPane();
 		mainContentPane.setLayout(null);
 		
-		selectPanel = new JPanel();
+		selectPanel = new SelectPanel();
 		selectPanel.setBounds(30, 10, frameWidth, frameHeight);
 		selectPanel.setLayout(null);
 		//selectPanel.setBorder(BorderFactory.createTitledBorder("目标选择区域"));
@@ -237,6 +193,37 @@ public class GetPointData {
 		
 		mainFrame.setResizable(false);
 		mainFrame.setVisible(true);
+	}
+	
+
+	public void paintNine() {
+		int mX = 450;
+		int mY = 459;
+		int distanceOfEachLayer = frameWidth/3;
+		
+		Graphics graphics = selectPanel.getGraphics();
+
+		graphics.setColor(Color.BLUE);
+		graphics.fillOval(mX - distanceOfEachLayer - 2, mY - distanceOfEachLayer - 2 , 4, 4);
+		graphics.fillOval(mX - 2, mY - distanceOfEachLayer - 2 , 4, 4);
+		graphics.fillOval(mX + distanceOfEachLayer - 2, mY - distanceOfEachLayer- 2, 4, 4);
+		graphics.fillOval(mX - distanceOfEachLayer - 2, mY - 2, 4, 4);
+		graphics.fillOval(mX- 2,mY- 2, 4, 4);
+		graphics.fillOval(mX + distanceOfEachLayer - 2, mY - 2, 4, 4);
+		graphics.fillOval(mX - distanceOfEachLayer - 2, mY + distanceOfEachLayer- 2, 4, 4);
+		graphics.fillOval(mX - 2, mY + distanceOfEachLayer- 2, 4, 4);
+		graphics.fillOval(mX + distanceOfEachLayer - 2, mY + distanceOfEachLayer- 2, 4, 4);
+		
+		graphics.drawString("1",mX - distanceOfEachLayer , mY - distanceOfEachLayer);
+		graphics.drawString("2",mX , mY - distanceOfEachLayer);
+		graphics.drawString("3",mX + distanceOfEachLayer , mY - distanceOfEachLayer);
+		graphics.drawString("4",mX - distanceOfEachLayer , mY );
+		graphics.drawString("5",mX , mY );
+		graphics.drawString("6",mX + distanceOfEachLayer , mY );
+		graphics.drawString("7",mX - distanceOfEachLayer , mY + distanceOfEachLayer);
+		graphics.drawString("8",mX , mY + distanceOfEachLayer);
+		graphics.drawString("9",mX + distanceOfEachLayer , mY + distanceOfEachLayer);
+		
 	}
 	
 

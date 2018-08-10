@@ -140,6 +140,7 @@ public class VoiceSelect {
 			"voice5Start", "voice5End", "voice5Result",
 			"testEnd" , "testResult","numOfSelect"};
 	Data user = new Data();
+	private boolean voiceNumFlag = true;
 	
 	public VoiceSelect(){
 		client = new AipSpeech(APP_ID, API_KEY, SECRET_KEY);
@@ -206,30 +207,43 @@ public class VoiceSelect {
 			setTitle();
 			if (textResult.contains("一")||textResult.contains("1")) {
 				switchPaint(1);
+				voiceNumFlag =true;
 			}else if (textResult.contains("二")||textResult.contains("2")) {
 				switchPaint(2);
+				voiceNumFlag =true;
 			}else if (textResult.contains("三")||textResult.contains("3")) {
 				switchPaint(3);
+				voiceNumFlag =true;
 			}else if (textResult.contains("四")||textResult.contains("4")) {
 				switchPaint(4);
+				voiceNumFlag =true;
 			}else if (textResult.contains("五")||textResult.contains("5")) {
 				switchPaint(5);
+				voiceNumFlag =true;
 			}else if (textResult.contains("六")||textResult.contains("6")) {
 				switchPaint(6);
+				voiceNumFlag =true;
 			}else if (textResult.contains("七")||textResult.contains("7")) {
 				switchPaint(7);
+				voiceNumFlag =true;
 			}else if (textResult.contains("八")||textResult.contains("8")) {
 				switchPaint(8);
+				voiceNumFlag =true;
 			}else if (textResult.contains("九")||textResult.contains("9")) {
 				switchPaint(9);	
+				voiceNumFlag =true;
 			}else if (textResult.contains("上")) {
 				keyOri(3);
+				voiceNumFlag =true;
 			}else if (textResult.contains("下")) {
 				keyOri(4);
+				voiceNumFlag =true;
 			}else if (textResult.contains("左")) {
 				keyOri(1);
+				voiceNumFlag =true;
 			}else if (textResult.contains("右")) {
 				keyOri(2);
+				voiceNumFlag =true;
 			}
 		}else {
 			logT = "语音识别出错";
@@ -583,7 +597,10 @@ public class VoiceSelect {
 						logT = "";
 						setTitle();
 						recStartTime = System.currentTimeMillis();
-						voiceNum++;
+						if (voiceNumFlag) {
+							voiceNum++;
+							voiceNumFlag=false;
+						}
 						setVoiceStartTime(voiceNum);
 						capture(); // 调用录音的方法
 						voiveFlag = false;

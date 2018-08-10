@@ -94,9 +94,14 @@ public class VoiceSelectTest3 {
 	private JFrame mainFrame;
 	private Container mainContentPane;
 	private JPanel mainPanel,selectPanel;
-	private int objWidth = 40,objHeight = 40;//目标大小
+	private int objWidth = 30,objHeight = 30;//目标大小
 	private int frameWidth = 900,frameHeight = 900;//区域大小
-	private JButton button1,button2,button3,button4,button5;
+	private JButton button1,button2,button3,button4,button5,button6,button7,button8,button9;
+	private JButton button10,button11,button12,button13,button14,button15,button16,button17,button18;
+	private JButton button19,button20,button21,button22,button23,button24,button25,button26,button27;
+	private JButton button28,button29,button30,button31,button44,button46,button47,button48,button39;
+	private JButton button41,button51,button42,button43,button40,button53,button54,button45,button38;
+	private JButton button49,button50,button52,button32,button33,button34,button35,button36,button37;
 	private ArrayList<Point> pointList;
 	private ArrayList<JButton> listButton;
 
@@ -346,6 +351,33 @@ public class VoiceSelectTest3 {
 			public void keyPressed(KeyEvent e) {
 				super.keyPressed(e);
 				switch (e.getKeyCode()) {
+				case KeyEvent.VK_1:
+					paint1(1);
+					break;
+				case KeyEvent.VK_2:
+					paint1(2);
+					break;
+				case KeyEvent.VK_3:
+					paint1(3);
+					break;
+				case KeyEvent.VK_4:
+					paint1(4);
+					break;
+				case KeyEvent.VK_5:
+					paint1(5);
+					break;
+				case KeyEvent.VK_6:
+					paint1(6);
+					break;
+				case KeyEvent.VK_7:
+					paint1(7);
+					break;
+				case KeyEvent.VK_8:
+					paint1(8);
+					break;
+				case KeyEvent.VK_9:
+					paint1(9);
+					break;
 				case KeyEvent.VK_LEFT:
 					keyOri(1);
 					break;
@@ -395,6 +427,40 @@ public class VoiceSelectTest3 {
 				}
 			}
 		});
+	}
+	
+	// 画九宫格加画指示
+	public void paint1(int keyNum) {
+		if (layerNum < 3) {
+			mouseMoveToNext(keyNum);
+			numOfSelect++;
+			if (numOfSelect == 1) {
+				startTime = System.currentTimeMillis();
+			}
+			if (layerNum < 2) {
+				layerNum++;
+				//进行下一级操作的准备：设置层次、距离，画出预选点
+				setLayerDistance();
+				paintFlag();
+			}else {
+				layerNum++;
+				Point myPoint = new Point(mousePoint.x,mousePoint.y);
+				SwingUtilities.convertPointFromScreen(myPoint, selectPanel);
+				// 让panel上的图形消失
+				Graphics graphics = selectPanel.getGraphics();
+				selectPanel.paint(graphics);
+				graphics.setColor(Color.RED);
+				int mX = myPoint.x;
+				int mY = myPoint.y;
+				graphics.drawLine(mX,mY,mX,mY-1000);
+				graphics.drawLine(mX,mY,mX,mY+1000);
+				graphics.drawLine(mX,mY,mX-1000,mY);
+				graphics.drawLine(mX,mY,mX+1000,mY);
+				
+			}
+		}
+		areaT = "您选择了:" + keyNum + "号; ";
+		setTitle();
 	}
 	
 	public void setVoiceStartTime(int num) {
@@ -557,12 +623,16 @@ public class VoiceSelectTest3 {
 		
 		button1 = new JButton("1");
 		button1.setBounds(30, 10, 40, 40);
+		button1.setBackground(Color.WHITE);
+		button1.setOpaque(true);
+		button1.setBorder(new LineBorder(Color.BLACK));
 		button1.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button1")) {
+					objWidth=30;
+					objHeight=30;
 					areaT="实验1； ";
-					logT="";
 					setTitle();
 					voiceNum=0;
 					addBtnToPanel();
@@ -570,17 +640,22 @@ public class VoiceSelectTest3 {
 					enter();
 					user.setButtonName("1");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button1.setBackground(Color.GREEN);
 				}
 			}
 		});
 		button2 = new JButton("2");
 		button2.setBounds(80, 10, 40, 40);
+		button2.setBackground(Color.WHITE);
+		button2.setOpaque(true);
+		button2.setBorder(new LineBorder(Color.BLACK));
 		button2.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button2")) {
+					objWidth=60;
+					objHeight=60;
 					areaT = "实验2； ";
-					logT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -588,17 +663,22 @@ public class VoiceSelectTest3 {
 					enter();
 					user.setButtonName("2");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button2.setBackground(Color.GREEN);
 				}
 			}
 		});
 		button3 = new JButton("3");
 		button3.setBounds(130, 10, 40, 40);
+		button3.setBackground(Color.WHITE);
+		button3.setOpaque(true);
+		button3.setBorder(new LineBorder(Color.BLACK));
 		button3.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button3")) {
+					objWidth=90;
+					objHeight=90;
 					areaT = "实验3； ";
-					logT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -606,17 +686,22 @@ public class VoiceSelectTest3 {
 					enter();
 					user.setButtonName("3");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button3.setBackground(Color.GREEN);
 				}
 			}
 		});
 		button4 = new JButton("4");
 		button4.setBounds(180, 10, 40, 40);
+		button4.setBackground(Color.WHITE);
+		button4.setOpaque(true);
+		button4.setBorder(new LineBorder(Color.BLACK));
 		button4.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button4")) {
+					objWidth=30;
+					objHeight=30;
 					areaT = "实验4； ";
-					logT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -624,17 +709,22 @@ public class VoiceSelectTest3 {
 					enter();
 					user.setButtonName("4");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button4.setBackground(Color.GREEN);
 				}
 			}
 		});
 		button5 = new JButton("5");
 		button5.setBounds(30, 60, 40, 40);
+		button5.setBackground(Color.WHITE);
+		button5.setOpaque(true);
+		button5.setBorder(new LineBorder(Color.BLACK));
 		button5.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button5")) {
+					objWidth=60;
+					objHeight=60;
 					areaT = "实验5； ";
-					logT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -642,15 +732,1207 @@ public class VoiceSelectTest3 {
 					enter();
 					user.setButtonName("5");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button5.setBackground(Color.GREEN);
 				}
 			}
 		});
+		button6 = new JButton("6");
+		button6.setBounds(80, 60, 40, 40);
+		button6.setBackground(Color.WHITE);
+		button6.setOpaque(true);
+		button6.setBorder(new LineBorder(Color.BLACK));
+		button6.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button6")) {
+					objWidth=90;
+					objHeight=90;
+					areaT = "实验6； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("6");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button6.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button7 = new JButton("7");
+		button7.setBounds(130, 60, 40, 40);
+		button7.setBackground(Color.WHITE);
+		button7.setOpaque(true);
+		button7.setBorder(new LineBorder(Color.BLACK));
+		button7.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button7")) {
+					objWidth=30;
+					objHeight=30;
+					areaT = "实验7； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("7");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button7.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button8 = new JButton("8");
+		button8.setBounds(180, 60, 40, 40);
+		button8.setBackground(Color.WHITE);
+		button8.setOpaque(true);
+		button8.setBorder(new LineBorder(Color.BLACK));
+		button8.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button8")) {
+					objWidth=60;
+					objHeight=60;
+					areaT = "实验8； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("8");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button8.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button9 = new JButton("9");
+		button9.setBounds(30, 110, 40, 40);
+		button9.setBackground(Color.WHITE);
+		button9.setOpaque(true);
+		button9.setBorder(new LineBorder(Color.BLACK));
+		button9.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button9")) {
+					objWidth=90;
+					objHeight=90;
+					areaT = "实验9； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("9");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button9.setBackground(Color.GREEN);
+				}
+			}
+		});
+		
+		
+		button10 = new JButton("10");
+		button10.setBounds(80, 110, 40, 40);
+		button10.setBackground(Color.WHITE);
+		button10.setOpaque(true);
+		button10.setBorder(new LineBorder(Color.BLACK));
+		button10.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button1")) {
+					objWidth=30;
+					objHeight=30;
+					areaT="实验10； ";
+					setTitle();
+					voiceNum=0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("10");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button10.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button11 = new JButton("11");
+		button11.setBounds(130, 110, 40, 40);
+		button11.setBackground(Color.WHITE);
+		button11.setOpaque(true);
+		button11.setBorder(new LineBorder(Color.BLACK));
+		button11.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button2")) {
+					objWidth=60;
+					objHeight=60;
+					areaT = "实验11； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("11");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button11.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button12 = new JButton("12");
+		button12.setBounds(180, 110, 40, 40);
+		button12.setBackground(Color.WHITE);
+		button12.setOpaque(true);
+		button12.setBorder(new LineBorder(Color.BLACK));
+		button12.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button3")) {
+					objWidth=90;
+					objHeight=90;
+					areaT = "实验12； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("12");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button12.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button13 = new JButton("13");
+		button13.setBounds(30, 160, 40, 40);
+		button13.setBackground(Color.WHITE);
+		button13.setOpaque(true);
+		button13.setBorder(new LineBorder(Color.BLACK));
+		button13.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button4")) {
+					objWidth=30;
+					objHeight=30;
+					areaT = "实验13； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("13");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button13.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button14 = new JButton("14");
+		button14.setBounds(80, 160, 40, 40);
+		button14.setBackground(Color.WHITE);
+		button14.setOpaque(true);
+		button14.setBorder(new LineBorder(Color.BLACK));
+		button14.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button5")) {
+					objWidth=60;
+					objHeight=60;
+					areaT = "实验14； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("14");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button14.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button15 = new JButton("15");
+		button15.setBounds(130, 160, 40, 40);
+		button15.setBackground(Color.WHITE);
+		button15.setOpaque(true);
+		button15.setBorder(new LineBorder(Color.BLACK));
+		button15.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button6")) {
+					objWidth=90;
+					objHeight=90;
+					areaT = "实验15； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("15");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button15.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button16 = new JButton("16");
+		button16.setBounds(180, 160, 40, 40);
+		button16.setBackground(Color.WHITE);
+		button16.setOpaque(true);
+		button16.setBorder(new LineBorder(Color.BLACK));
+		button16.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button7")) {
+					objWidth=30;
+					objHeight=30;
+					areaT = "实验16； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("16");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button16.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button17 = new JButton("17");
+		button17.setBounds(30, 210, 40, 40);
+		button17.setBackground(Color.WHITE);
+		button17.setOpaque(true);
+		button17.setBorder(new LineBorder(Color.BLACK));
+		button17.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button8")) {
+					objWidth=60;
+					objHeight=60;
+					areaT = "实验17； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("17");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button17.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button18 = new JButton("18");
+		button18.setBounds(80, 210, 40, 40);
+		button18.setBackground(Color.WHITE);
+		button18.setOpaque(true);
+		button18.setBorder(new LineBorder(Color.BLACK));
+		button18.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button9")) {
+					objWidth=90;
+					objHeight=90;
+					areaT = "实验18； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("18");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button18.setBackground(Color.GREEN);
+				}
+			}
+		});
+		
+		
+		button19 = new JButton("19");
+		button19.setBounds(130, 210, 40, 40);
+		button19.setBackground(Color.WHITE);
+		button19.setOpaque(true);
+		button19.setBorder(new LineBorder(Color.BLACK));
+		button19.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button1")) {
+					objWidth=30;
+					objHeight=30;
+					areaT="实验19； ";
+					setTitle();
+					voiceNum=0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("19");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button19.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button20 = new JButton("20");
+		button20.setBounds(180, 210, 40, 40);
+		button20.setBackground(Color.WHITE);
+		button20.setOpaque(true);
+		button20.setBorder(new LineBorder(Color.BLACK));
+		button20.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button2")) {
+					objWidth=60;
+					objHeight=60;
+					areaT = "实验20； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("20");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button20.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button21 = new JButton("21");
+		button21.setBounds(30, 260, 40, 40);
+		button21.setBackground(Color.WHITE);
+		button21.setOpaque(true);
+		button21.setBorder(new LineBorder(Color.BLACK));
+		button21.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button3")) {
+					objWidth=90;
+					objHeight=90;
+					areaT = "实验21； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("21");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button21.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button22 = new JButton("22");
+		button22.setBounds(80, 260, 40, 40);
+		button22.setBackground(Color.WHITE);
+		button22.setOpaque(true);
+		button22.setBorder(new LineBorder(Color.BLACK));
+		button22.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button4")) {
+					objWidth=30;
+					objHeight=30;
+					areaT = "实验22； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("22");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button22.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button23 = new JButton("23");
+		button23.setBounds(130, 260, 40, 40);
+		button23.setBackground(Color.WHITE);
+		button23.setOpaque(true);
+		button23.setBorder(new LineBorder(Color.BLACK));
+		button23.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button5")) {
+					objWidth=60;
+					objHeight=60;
+					areaT = "实验23； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("23");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button23.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button24 = new JButton("24");
+		button24.setBounds(180, 260, 40, 40);
+		button24.setBackground(Color.WHITE);
+		button24.setOpaque(true);
+		button24.setBorder(new LineBorder(Color.BLACK));
+		button24.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button6")) {
+					objWidth=90;
+					objHeight=90;
+					areaT = "实验24； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("24");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button24.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button25 = new JButton("25");
+		button25.setBounds(30, 310, 40, 40);
+		button25.setBackground(Color.WHITE);
+		button25.setOpaque(true);
+		button25.setBorder(new LineBorder(Color.BLACK));
+		button25.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button7")) {
+					objWidth=30;
+					objHeight=30;
+					areaT = "实验25； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("25");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button25.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button26 = new JButton("26");
+		button26.setBounds(80, 310, 40, 40);
+		button26.setBackground(Color.WHITE);
+		button26.setOpaque(true);
+		button26.setBorder(new LineBorder(Color.BLACK));
+		button26.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button8")) {
+					objWidth=60;
+					objHeight=60;
+					areaT = "实验26； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("26");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button26.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button27 = new JButton("27");
+		button27.setBounds(130, 310, 40, 40);
+		button27.setBackground(Color.WHITE);
+		button27.setOpaque(true);
+		button27.setBorder(new LineBorder(Color.BLACK));
+		button27.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button9")) {
+					objWidth=90;
+					objHeight=90;
+					areaT = "实验27； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("27");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button27.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button28 = new JButton("28");
+		button28.setBounds(180, 310, 40, 40);
+		button28.setBackground(Color.WHITE);
+		button28.setOpaque(true);
+		button28.setBorder(new LineBorder(Color.BLACK));
+		button28.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button8")) {
+					objWidth=60;
+					objHeight=60;
+					areaT = "实验28； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("28");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button28.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button29 = new JButton("29");
+		button29.setBounds(30, 360, 40, 40);
+		button29.setBackground(Color.WHITE);
+		button29.setOpaque(true);
+		button29.setBorder(new LineBorder(Color.BLACK));
+		button29.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button9")) {
+					objWidth=90;
+					objHeight=90;
+					areaT = "实验29； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("29");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button29.setBackground(Color.GREEN);
+				}
+			}
+		});
+		
+		button30 = new JButton("30");
+		button30.setBounds(80, 360, 40, 40);
+		button30.setBackground(Color.WHITE);
+		button30.setOpaque(true);
+		button30.setBorder(new LineBorder(Color.BLACK));
+		button30.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button1")) {
+					objWidth=30;
+					objHeight=30;
+					areaT="实验30； ";
+					setTitle();
+					voiceNum=0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("30");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button30.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button31 = new JButton("31");
+		button31.setBounds(130, 360, 40, 40);
+		button31.setBackground(Color.WHITE);
+		button31.setOpaque(true);
+		button31.setBorder(new LineBorder(Color.BLACK));
+		button31.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button2")) {
+					objWidth=60;
+					objHeight=60;
+					areaT = "实验31； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("31");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button31.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button32 = new JButton("32");
+		button32.setBounds(180, 360, 40, 40);
+		button32.setBackground(Color.WHITE);
+		button32.setOpaque(true);
+		button32.setBorder(new LineBorder(Color.BLACK));
+		button32.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button3")) {
+					objWidth=90;
+					objHeight=90;
+					areaT = "实验32； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("32");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button32.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button33 = new JButton("33");
+		button33.setBounds(30, 410, 40, 40);
+		button33.setBackground(Color.WHITE);
+		button33.setOpaque(true);
+		button33.setBorder(new LineBorder(Color.BLACK));
+		button33.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button4")) {
+					objWidth=30;
+					objHeight=30;
+					areaT = "实验33； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("33");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button33.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button34 = new JButton("34");
+		button34.setBounds(80, 410, 40, 40);
+		button34.setBackground(Color.WHITE);
+		button34.setOpaque(true);
+		button34.setBorder(new LineBorder(Color.BLACK));
+		button34.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button5")) {
+					objWidth=60;
+					objHeight=60;
+					areaT = "实验34； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("34");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button34.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button35 = new JButton("35");
+		button35.setBounds(130, 410, 40, 40);
+		button35.setBackground(Color.WHITE);
+		button35.setOpaque(true);
+		button35.setBorder(new LineBorder(Color.BLACK));
+		button35.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button6")) {
+					objWidth=90;
+					objHeight=90;
+					areaT = "实验35； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("35");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button35.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button36 = new JButton("36");
+		button36.setBounds(180, 410, 40, 40);
+		button36.setBackground(Color.WHITE);
+		button36.setOpaque(true);
+		button36.setBorder(new LineBorder(Color.BLACK));
+		button36.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button7")) {
+					objWidth=30;
+					objHeight=30;
+					areaT = "实验36； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("36");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button36.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button37 = new JButton("37");
+		button37.setBounds(30, 460, 40, 40);
+		button37.setBackground(Color.WHITE);
+		button37.setOpaque(true);
+		button37.setBorder(new LineBorder(Color.BLACK));
+		button37.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button8")) {
+					objWidth=60;
+					objHeight=60;
+					areaT = "实验37； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("37");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button37.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button38 = new JButton("38");
+		button38.setBounds(80, 460, 40, 40);
+		button38.setBackground(Color.WHITE);
+		button38.setOpaque(true);
+		button38.setBorder(new LineBorder(Color.BLACK));
+		button38.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button9")) {
+					objWidth=90;
+					objHeight=90;
+					areaT = "实验38； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("38");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button38.setBackground(Color.GREEN);
+				}
+			}
+		});
+		
+		
+		button39 = new JButton("39");
+		button39.setBounds(130, 460, 40, 40);
+		button39.setBackground(Color.WHITE);
+		button39.setOpaque(true);
+		button39.setBorder(new LineBorder(Color.BLACK));
+		button39.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button1")) {
+					objWidth=30;
+					objHeight=30;
+					areaT="实验39； ";
+					setTitle();
+					voiceNum=0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("39");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button39.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button40 = new JButton("40");
+		button40.setBounds(180, 460, 40, 40);
+		button40.setBackground(Color.WHITE);
+		button40.setOpaque(true);
+		button40.setBorder(new LineBorder(Color.BLACK));
+		button40.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button2")) {
+					objWidth=60;
+					objHeight=60;
+					areaT = "实验40； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("40");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button40.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button41 = new JButton("41");
+		button41.setBounds(30, 510, 40, 40);
+		button41.setBackground(Color.WHITE);
+		button41.setOpaque(true);
+		button41.setBorder(new LineBorder(Color.BLACK));
+		button41.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button3")) {
+					objWidth=90;
+					objHeight=90;
+					areaT = "实验41； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("41");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button41.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button42 = new JButton("42");
+		button42.setBounds(80, 510, 40, 40);
+		button42.setBackground(Color.WHITE);
+		button42.setOpaque(true);
+		button42.setBorder(new LineBorder(Color.BLACK));
+		button42.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button4")) {
+					objWidth=30;
+					objHeight=30;
+					areaT = "实验42； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("42");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button42.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button43 = new JButton("43");
+		button43.setBounds(130, 510, 40, 40);
+		button43.setBackground(Color.WHITE);
+		button43.setOpaque(true);
+		button43.setBorder(new LineBorder(Color.BLACK));
+		button43.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button5")) {
+					objWidth=60;
+					objHeight=60;
+					areaT = "实验43； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("43");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button43.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button44 = new JButton("44");
+		button44.setBounds(180, 510, 40, 40);
+		button44.setBackground(Color.WHITE);
+		button44.setOpaque(true);
+		button44.setBorder(new LineBorder(Color.BLACK));
+		button44.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button6")) {
+					objWidth=90;
+					objHeight=90;
+					areaT = "实验44； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("44");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button44.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button45 = new JButton("45");
+		button45.setBounds(30, 560, 40, 40);
+		button45.setBackground(Color.WHITE);
+		button45.setOpaque(true);
+		button45.setBorder(new LineBorder(Color.BLACK));
+		button45.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button7")) {
+					objWidth=30;
+					objHeight=30;
+					areaT = "实验45； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("45");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button45.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button46 = new JButton("46");
+		button46.setBounds(80, 560, 40, 40);
+		button46.setBackground(Color.WHITE);
+		button46.setOpaque(true);
+		button46.setBorder(new LineBorder(Color.BLACK));
+		button46.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button8")) {
+					objWidth=60;
+					objHeight=60;
+					areaT = "实验46； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("46");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button46.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button47 = new JButton("47");
+		button47.setBounds(130, 560, 40, 40);
+		button47.setBackground(Color.WHITE);
+		button47.setOpaque(true);
+		button47.setBorder(new LineBorder(Color.BLACK));
+		button47.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button9")) {
+					objWidth=90;
+					objHeight=90;
+					areaT = "实验47； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("47");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button47.setBackground(Color.GREEN);
+				}
+			}
+		});
+		
+		
+		button48 = new JButton("48");
+		button48.setBounds(180, 560, 40, 40);
+		button48.setBackground(Color.WHITE);
+		button48.setOpaque(true);
+		button48.setBorder(new LineBorder(Color.BLACK));
+		button48.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button1")) {
+					objWidth=30;
+					objHeight=30;
+					areaT="实验48； ";
+					setTitle();
+					voiceNum=0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("48");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button48.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button49 = new JButton("49");
+		button49.setBounds(30, 610, 40, 40);
+		button49.setBackground(Color.WHITE);
+		button49.setOpaque(true);
+		button49.setBorder(new LineBorder(Color.BLACK));
+		button49.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button2")) {
+					objWidth=60;
+					objHeight=60;
+					areaT = "实验49； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("49");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button49.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button50 = new JButton("50");
+		button50.setBounds(80, 610, 40, 40);
+		button50.setBackground(Color.WHITE);
+		button50.setOpaque(true);
+		button50.setBorder(new LineBorder(Color.BLACK));
+		button50.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button3")) {
+					objWidth=90;
+					objHeight=90;
+					areaT = "实验50； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("50");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button50.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button51 = new JButton("51");
+		button51.setBounds(130, 610, 40, 40);
+		button51.setBackground(Color.WHITE);
+		button51.setOpaque(true);
+		button51.setBorder(new LineBorder(Color.BLACK));
+		button51.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button4")) {
+					objWidth=30;
+					objHeight=30;
+					areaT = "实验51； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("51");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button51.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button52 = new JButton("52");
+		button52.setBounds(180, 610, 40, 40);
+		button52.setBackground(Color.WHITE);
+		button52.setOpaque(true);
+		button52.setBorder(new LineBorder(Color.BLACK));
+		button52.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button5")) {
+					objWidth=60;
+					objHeight=60;
+					areaT = "实验52； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("52");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button52.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button53 = new JButton("53");
+		button53.setBounds(30, 660, 40, 40);
+		button53.setBackground(Color.WHITE);
+		button53.setOpaque(true);
+		button53.setBorder(new LineBorder(Color.BLACK));
+		button53.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button6")) {
+					objWidth=90;
+					objHeight=90;
+					areaT = "实验53； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("53");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button53.setBackground(Color.GREEN);
+				}
+			}
+		});
+		button54 = new JButton("54");
+		button54.setBounds(80, 660, 40, 40);
+		button54.setBackground(Color.WHITE);
+		button54.setOpaque(true);
+		button54.setBorder(new LineBorder(Color.BLACK));
+		button54.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (readPointData("button7")) {
+					objWidth=30;
+					objHeight=30;
+					areaT = "实验54； ";
+					setTitle();
+					voiceNum = 0;
+					addBtnToPanel();
+					mainFrame.requestFocus();
+					enter();
+					user.setButtonName("54");
+					user.setTestStart(String.valueOf(System.currentTimeMillis()));
+					button54.setBackground(Color.GREEN);
+				}
+			}
+		});
+		
 		
 		mainPanel.add(button1);
 		mainPanel.add(button2);
 		mainPanel.add(button3);
 		mainPanel.add(button4);
 		mainPanel.add(button5);
+		mainPanel.add(button6);
+		mainPanel.add(button7);
+		mainPanel.add(button8);
+		mainPanel.add(button9);
+		
+		mainPanel.add(button10);
+		mainPanel.add(button11);
+		mainPanel.add(button12);
+		mainPanel.add(button13);
+		mainPanel.add(button14);
+		mainPanel.add(button15);
+		mainPanel.add(button16);
+		mainPanel.add(button17);
+		mainPanel.add(button18);
+		
+		mainPanel.add(button19);
+		mainPanel.add(button20);
+		mainPanel.add(button21);
+		mainPanel.add(button22);
+		mainPanel.add(button23);
+		mainPanel.add(button24);
+		mainPanel.add(button25);
+		mainPanel.add(button26);
+		mainPanel.add(button27);
+		
+		mainPanel.add(button28);
+		mainPanel.add(button29);
+		mainPanel.add(button30);
+		mainPanel.add(button31);
+		mainPanel.add(button32);
+		mainPanel.add(button33);
+		mainPanel.add(button34);
+		mainPanel.add(button35);
+		mainPanel.add(button36);
+		
+		mainPanel.add(button37);
+		mainPanel.add(button38);
+		mainPanel.add(button39);
+		mainPanel.add(button40);
+		mainPanel.add(button41);
+		mainPanel.add(button42);
+		mainPanel.add(button43);
+		mainPanel.add(button44);
+		mainPanel.add(button45);
+		
+		mainPanel.add(button46);
+		mainPanel.add(button47);
+		mainPanel.add(button48);
+		mainPanel.add(button49);
+		mainPanel.add(button50);
+		mainPanel.add(button51);
+		mainPanel.add(button52);
+		mainPanel.add(button53);
+		mainPanel.add(button54);
 		
 		mainContentPane.add(selectPanel);
 		mainContentPane.add(mainPanel);
@@ -665,9 +1947,10 @@ public class VoiceSelectTest3 {
 		SwingUtilities.convertPointToScreen(mousePoint, selectPanel);//转化成frame的坐标系
 		layerNum = 0;
 		setLayerDistance();
+		
 		paintFlag();//画标记
+		
 		numOfSelect = 0;
-
 		setTitle();
 	}
 	
@@ -678,14 +1961,38 @@ public class VoiceSelectTest3 {
 		int mY = myPoint.y;
 		Graphics graphics = selectPanel.getGraphics();
 		selectPanel.paint(graphics);
-		graphics.setColor(Color.RED);
+		
+		if(layerNum<3) {
+			graphics.setColor(Color.BLUE);
+			graphics.fillOval(mX - distanceOfEachLayer - 2, mY - distanceOfEachLayer - 2 , 4, 4);
+			graphics.fillOval(mX - 2, mY - distanceOfEachLayer - 2 , 4, 4);
+			graphics.fillOval(mX + distanceOfEachLayer - 2, mY - distanceOfEachLayer- 2, 4, 4);
+			graphics.fillOval(mX - distanceOfEachLayer - 2, mY - 2, 4, 4);
+			graphics.fillOval(mX- 2,mY- 2, 4, 4);
+			graphics.fillOval(mX + distanceOfEachLayer - 2, mY - 2, 4, 4);
+			graphics.fillOval(mX - distanceOfEachLayer - 2, mY + distanceOfEachLayer- 2, 4, 4);
+			graphics.fillOval(mX - 2, mY + distanceOfEachLayer- 2, 4, 4);
+			graphics.fillOval(mX + distanceOfEachLayer - 2, mY + distanceOfEachLayer- 2, 4, 4);
+			
+			graphics.drawString("1",mX - distanceOfEachLayer , mY - distanceOfEachLayer);
+			graphics.drawString("2",mX , mY - distanceOfEachLayer);
+			graphics.drawString("3",mX + distanceOfEachLayer , mY - distanceOfEachLayer);
+			graphics.drawString("4",mX - distanceOfEachLayer , mY );
+			graphics.drawString("5",mX , mY );
+			graphics.drawString("6",mX + distanceOfEachLayer , mY );
+			graphics.drawString("7",mX - distanceOfEachLayer , mY + distanceOfEachLayer);
+			graphics.drawString("8",mX , mY + distanceOfEachLayer);
+			graphics.drawString("9",mX + distanceOfEachLayer , mY + distanceOfEachLayer);
+		}
 
+		graphics.setColor(Color.RED);
 		graphics.drawLine(mX,mY,mX,mY-1000);
 		graphics.drawLine(mX,mY,mX,mY+1000);
 		graphics.drawLine(mX,mY,mX-1000,mY);
 		graphics.drawLine(mX,mY,mX+1000,mY);
 		
 	}
+	
 	// 计算每层(0-3)深度所需的距离
 	public void setLayerDistance() {
 		switch (layerNum) {

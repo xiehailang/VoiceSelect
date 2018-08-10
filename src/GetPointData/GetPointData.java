@@ -38,6 +38,8 @@ public class GetPointData {
 	
 	private ArrayList<JButton> listButton;
 	
+	private int numObj = 11;//目标数量
+	
 	String desktopPath = null;
 	String filePath = "";
 	String sheetName = "";
@@ -61,9 +63,9 @@ public class GetPointData {
 		//当前用户桌面
 		File desktopDir = FileSystemView.getFileSystemView() .getHomeDirectory();		
 		desktopPath = desktopDir.getAbsolutePath();
-		filePath = desktopPath+"/Desktop/PointDataTest.xls";
+		filePath = desktopPath+"/Desktop/GetPointData.xls";
 		if(os.toLowerCase().startsWith("win")){  
-			filePath = desktopPath+"\\PointDataTest.txt";
+			filePath = desktopPath+"\\GetPointData.txt";
 		}
 	}
 	
@@ -130,7 +132,7 @@ public class GetPointData {
 			public void actionPerformed(ActionEvent e) {
 				sheetName = "30乘30";
 				selectPanel.removeAll();
-				addButton(selectPanel,30,30,30);
+				addButton(selectPanel,numObj,30,30);
 				selectPanel.repaint(); 
 				actionBool=true;//可以进行获取数据了
 			}
@@ -145,7 +147,7 @@ public class GetPointData {
 			public void actionPerformed(ActionEvent e) {
 				sheetName = "60乘60";
 				selectPanel.removeAll();
-				addButton(selectPanel,30,60,60);
+				addButton(selectPanel,numObj,60,60);
 				selectPanel.repaint(); 
 				actionBool=true;
 			}
@@ -160,7 +162,7 @@ public class GetPointData {
 			public void actionPerformed(ActionEvent e) {
 				sheetName = "90乘90";
 				selectPanel.removeAll();
-				addButton(selectPanel,30,90,90);
+				addButton(selectPanel,numObj,90,90);
 				selectPanel.repaint(); 
 				actionBool=true;
 			}

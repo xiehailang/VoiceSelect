@@ -1,4 +1,4 @@
-package VoiceSelect;
+package VoiceSelecTest1;
 
 import java.awt.AWTException;
 import java.awt.BorderLayout;
@@ -69,7 +69,7 @@ import org.json.JSONObject;
 import com.baidu.aip.speech.AipSpeech;
 
 
-public class VoiceSelect {
+public class VoiceSelecTest1 {
 	
 	public static final String APP_ID = "11453107";
     public static final String API_KEY = "pLu1heTGawjYDxfQCjGn5wGy";
@@ -93,7 +93,7 @@ public class VoiceSelect {
     private long recStartTime;
     private long recEndTime;
     
-    private String testT="方法一； ",areaT="",logT="",keyT="";
+    private String areaT="",logT="",keyT="";
     
 	private JFrame mainFrame;
 	private Container mainContentPane;
@@ -109,8 +109,6 @@ public class VoiceSelect {
 	private JButton buttonA,buttonB,buttonC;
 	private ArrayList<Point> pointList;
 	private ArrayList<JButton> listButton;
-	
-	private int testFlag = 1;
 
 	private Point mousePoint = null;
 	private int layerNum = 5 ;
@@ -141,7 +139,7 @@ public class VoiceSelect {
 			"testEnd" , "testResult","numOfSelect"};
 	Data user = new Data();
 	
-	public VoiceSelect(){
+	public VoiceSelecTest1(){
 		client = new AipSpeech(APP_ID, API_KEY, SECRET_KEY);
 		setFilePath();
 		initFrame();
@@ -152,29 +150,16 @@ public class VoiceSelect {
 	public void setFilePath() {
 		String os = System.getProperty("os.name");  
 		//当前用户桌面
-		File desktopDir = FileSystemView.getFileSystemView().getHomeDirectory();		
+		File desktopDir = FileSystemView.getFileSystemView() .getHomeDirectory();		
 		desktopPath = desktopDir.getAbsolutePath();
-		filePath = desktopPath+"/Desktop/TestDataX.xls";
+		filePath = desktopPath+"/Desktop/data1.xls";
 		if(os.toLowerCase().startsWith("win")){  
-			filePath = desktopPath+"\\TestDataX.xls";
+			filePath = desktopPath+"\\data1.txt";
 		}
 	}
 	
 	public void savaAllData() {
 
-		
-		switch (testFlag) {
-		case 1:
-			sheetName = "方法一";
-			break;
-		case 2:
-			sheetName = "方法二";
-			break;
-		case 3:
-			sheetName = "方法三";
-			break;
-		}
-		
 		ExcelManage em = new ExcelManage();
 		// 判断该名称的文件是否存在
 		boolean fileFlag = em.fileExist(filePath);
@@ -205,157 +190,27 @@ public class VoiceSelect {
 			logT = "识别结果："+textResult;
 			setTitle();
 			if (textResult.contains("一")||textResult.contains("1")) {
-				switchPaint(1);
+				paint1(1);
 			}else if (textResult.contains("二")||textResult.contains("2")) {
-				switchPaint(2);
+				paint1(2);
 			}else if (textResult.contains("三")||textResult.contains("3")) {
-				switchPaint(3);
+				paint1(3);
 			}else if (textResult.contains("四")||textResult.contains("4")) {
-				switchPaint(4);
+				paint1(4);
 			}else if (textResult.contains("五")||textResult.contains("5")) {
-				switchPaint(5);
+				paint1(5);
 			}else if (textResult.contains("六")||textResult.contains("6")) {
-				switchPaint(6);
+				paint1(6);
 			}else if (textResult.contains("七")||textResult.contains("7")) {
-				switchPaint(7);
+				paint1(7);
 			}else if (textResult.contains("八")||textResult.contains("8")) {
-				switchPaint(8);
+				paint1(8);
 			}else if (textResult.contains("九")||textResult.contains("9")) {
-				switchPaint(9);	
-			}else if (textResult.contains("上")) {
-				keyOri(3);
-			}else if (textResult.contains("下")) {
-				keyOri(4);
-			}else if (textResult.contains("左")) {
-				keyOri(1);
-			}else if (textResult.contains("右")) {
-				keyOri(2);
+				paint1(9);	
 			}
 		}else {
 			logT = "语音识别出错";
 			setTitle();
-		}
-	}
-	
-	// 上下左右键盘的操作函数
-	public void keyOri(int orientation) {
-		if (testFlag == 3) {
-			mouseMoveBtn(orientation);
-			paintFlag();
-			numOfSelect++;
-			if (numOfSelect == 1) {
-				startTime = System.currentTimeMillis();
-			}
-
-			switch (orientation) {
-			case 1:
-				keyT = "您按下了左键; ";
-				break;
-			case 2:
-				keyT = "您按下了右键; ";
-				break;
-			case 3:
-				keyT = "您按下了上键; ";
-				break;
-			case 4:
-				keyT = "您按下了下键; ";
-				break;
-			}
-			setTitle();
-		}
-	}
-	
-	// 判断按钮位置，移动鼠标指针到按钮中心  
-	public void mouseMoveBtn(int orientation) {
-		Point myPoint = new Point(mousePoint.x,mousePoint.y);
-		SwingUtilities.convertPointFromScreen(myPoint, selectPanel);
-		int mouseInAreaX = myPoint.x;
-		int mouseInAreaY = myPoint.y;
-		Rectangle rect;
-		int rectX,rectY,rectH,rectW;
-		int distance,cpn=1000,obj = 100;
-		for (int index=0 ;index < listButton.size() ;index++ ) {
-			rect = listButton.get(index).getBounds();
-			rectX = rect.x;
-			rectY = rect.y;
-			rectW = rect.width;
-			rectH = rect.height;
-			switch (orientation) {
-			case 1:
-				if( ( rectX + rectW/2 ) < mouseInAreaX) {
-					if( rectY > (mouseInAreaY - rectH - rectH/2) && rectY < (mouseInAreaY + rectH/2) ) {
-						distance = mouseInAreaX - rectX;
-						if (distance < cpn) {
-							cpn = distance;
-							obj = index;
-						}
-					}
-				}
-				break;
-			case 2:
-				if( ( rectX + rectW/2 ) > mouseInAreaX) {
-					if( rectY > (mouseInAreaY - rectH - rectH/2) && rectY < (mouseInAreaY + rectH/2) ) {
-						distance = rectX - mouseInAreaX;
-						if (distance < cpn) {
-							cpn = distance;
-							obj = index;
-						}
-					}
-				}
-				break;
-			case 3:
-				if( ( rectY + rectH/2 ) < mouseInAreaY) {
-					if (rectX > (mouseInAreaX - rectW -rectW/2) && rectX < (mouseInAreaX + rectW/2)) {
-						distance = mouseInAreaY - rectY;
-						if (distance < cpn) {
-							cpn = distance;
-							obj = index;
-						}
-					}
-				}
-				break;
-			case 4:
-				if( ( rectY + rectH/2 ) > mouseInAreaY) {
-					if (rectX > (mouseInAreaX - rectW -rectW/2) && rectX < (mouseInAreaX + rectW/2)) {
-						distance = rectY - mouseInAreaY;
-						if (distance < cpn) {
-							cpn = distance;
-							obj = index;
-						}
-					}
-				}
-				break;
-			}
-		}
-		
-		if (cpn != 1000 && obj != 100) {
-			//计算返回的鼠标位置（在屏幕中的位置）
-			rect = listButton.get(obj).getBounds();
-			rectX = rect.x;
-			rectY = rect.y;
-			rectW = rect.width;
-			rectH = rect.height;
-			Point point = new Point(rectX + rectW/2,rectY + rectH/2);
-			SwingUtilities.convertPointToScreen(point, selectPanel);
-			logT = "移动到：("+point.x+","+point.y+")";
-			mousePoint = point;
-			
-		}
-	}
-	
-	
-	
-	public void switchPaint(int keynum) {
-		switch (testFlag) {
-		case 1:
-			paint1(keynum);
-			break;
-		case 2:
-			paint2(keynum);
-			break;
-		case 3:
-			paint3(keynum);
-			break;
 		}
 	}
 		
@@ -386,105 +241,6 @@ public class VoiceSelect {
 		keyT = "您选择了:" + keyNum + "号; ";
 		setTitle();
 	}
-	
-	public void paint2(int keyNum) {
-		if (layerNum < 3) {
-			mouseMoveToNext(keyNum);
-			numOfSelect++;
-			if (numOfSelect == 1) {
-				startTime = System.currentTimeMillis();
-			}
-			if (layerNum < 2) {
-				layerNum++;
-				//进行下一级操作的准备：设置层次、距离，画出预选点
-				setLayerDistance();
-				paintNine2();
-				selectButton();
-			}else {
-				layerNum++;
-				
-				// 需要将distanceOfEachLayer再减一层才能只包含最后一个按钮
-				selectButtonTest();
-			}
-		}
-		keyT = "您选择了:" + keyNum + "号; ";
-		setTitle();
-	}
-	
-	// 画九宫格加画指示
-	public void paint3(int keyNum) {
-		if (layerNum < 3) {
-			mouseMoveToNext(keyNum);
-			numOfSelect++;
-			if (numOfSelect == 1) {
-				startTime = System.currentTimeMillis();
-			}
-			if (layerNum < 2) {
-				layerNum++;
-				//进行下一级操作的准备：设置层次、距离，画出预选点
-				setLayerDistance();
-				paintFlag();
-			}else {
-				layerNum++;
-				Point myPoint = new Point(mousePoint.x,mousePoint.y);
-				SwingUtilities.convertPointFromScreen(myPoint, selectPanel);
-				// 让panel上的图形消失
-				Graphics graphics = selectPanel.getGraphics();
-				selectPanel.paint(graphics);
-				graphics.setColor(Color.RED);
-				int mX = myPoint.x;
-				int mY = myPoint.y;
-				graphics.drawLine(mX,mY,mX,mY-1000);
-				graphics.drawLine(mX,mY,mX,mY+1000);
-				graphics.drawLine(mX,mY,mX-1000,mY);
-				graphics.drawLine(mX,mY,mX+1000,mY);
-				
-			}
-		}
-		keyT = "您选择了:" + keyNum + "号; ";
-		setTitle();
-	}
-	
-	// 改bug加入的函数：解决distanceOfEachLayer不够小的问题
-	public void selectButtonTest() {
-		
-		// 让panel上的图形消失
-		Graphics graphics = selectPanel.getGraphics();
-		selectPanel.paint(graphics);
-		
-		distanceOfEachLayer = frameWidth/3/3/3/3;
-		// 得出选中的区域
-		Point myPoint = new Point(mousePoint.x,mousePoint.y);
-		SwingUtilities.convertPointFromScreen(myPoint, selectPanel);
-		int mX = myPoint.x;
-		int mY = myPoint.y;
-		Rectangle rect = new Rectangle();
-		rect.setBounds(mX - distanceOfEachLayer*3/2, mY - distanceOfEachLayer*3/2, distanceOfEachLayer*3, distanceOfEachLayer*3);
-		
-		// 筛选出区域中的按钮
-		for (int index=1 ;index < listButton.size() ;index++ ) {
-			Rectangle rectButton = listButton.get(index).getBounds();
-			Point one = new Point(rectButton.x, rectButton.y);
-			Point two = new Point(rectButton.x + rectButton.width, rectButton.y);
-			Point three = new Point(rectButton.x, rectButton.y + rectButton.height);
-			Point four = new Point(rectButton.x + rectButton.width, rectButton.y + rectButton.height);
-			if (rect.contains(one)||rect.contains(two)||rect.contains(three)||rect.contains(four)) {
-				listButton.get(index).setBackground(Color.LIGHT_GRAY);
-			}else {
-				listButton.get(index).setBackground(Color.WHITE);
-			}
-		}
-		
-		graphics.setColor(Color.BLUE);
-		//外边框
-		graphics.drawLine(mX - distanceOfEachLayer*3/2, mY - distanceOfEachLayer*3/2, mX + distanceOfEachLayer*3/2, mY - distanceOfEachLayer*3/2);
-		graphics.drawLine(mX - distanceOfEachLayer*3/2, mY - distanceOfEachLayer*3/2, mX - distanceOfEachLayer*3/2, mY + distanceOfEachLayer*3/2);
-		graphics.drawLine(mX + distanceOfEachLayer*3/2, mY + distanceOfEachLayer*3/2, mX + distanceOfEachLayer*3/2, mY - distanceOfEachLayer*3/2);
-		graphics.drawLine(mX + distanceOfEachLayer*3/2, mY + distanceOfEachLayer*3/2, mX - distanceOfEachLayer*3/2, mY + distanceOfEachLayer*3/2);
-
-	}
-	
-	
 	
 	// 计算下一级鼠标位置
 	public void mouseMoveToNext(int keyNumber) {
@@ -532,43 +288,31 @@ public class VoiceSelect {
 				super.keyPressed(e);
 				switch (e.getKeyCode()) {
 				case KeyEvent.VK_1:
-					switchPaint(1);
+					paint1(1);
 					break;
 				case KeyEvent.VK_2:
-					switchPaint(2);
+					paint1(2);
 					break;
 				case KeyEvent.VK_3:
-					switchPaint(3);
+					paint1(3);
 					break;
 				case KeyEvent.VK_4:
-					switchPaint(4);
+					paint1(4);
 					break;
 				case KeyEvent.VK_5:
-					switchPaint(5);
+					paint1(5);
 					break;
 				case KeyEvent.VK_6:
-					switchPaint(6);
+					paint1(6);
 					break;
 				case KeyEvent.VK_7:
-					switchPaint(7);
+					paint1(7);
 					break;
 				case KeyEvent.VK_8:
-					switchPaint(8);
+					paint1(8);
 					break;
 				case KeyEvent.VK_9:
-					switchPaint(9);
-					break;
-				case KeyEvent.VK_LEFT:
-					keyOri(1);
-					break;
-				case KeyEvent.VK_RIGHT:
-					keyOri(2);
-					break;
-				case KeyEvent.VK_UP:
-					keyOri(3);
-					break;
-				case KeyEvent.VK_DOWN:
-					keyOri(4);
+					paint1(9);
 					break;
 				case KeyEvent.VK_ENTER:
 					if (mousePoint!=null) {
@@ -669,50 +413,28 @@ public class VoiceSelect {
 	
 	// 实现模拟鼠标点击
 	public void mouseClick() {
-		if (testFlag == 2) {
-			boolean test = true;
-			for (int index=1 ;index < listButton.size() ;index++ ) {
-				if (listButton.get(index).getBackground( )== Color.LIGHT_GRAY) {
-					test = false;
-				}
-			}
-			
-			if (test) {
-				keyT="";
-				logT = "您点中了目标！";
-				user.setTestResult(true);
-				user.setNumOfSelect(String.valueOf(numOfSelect));
-				setTitle();
-			}else {
-				keyT="";
-				logT = "您进行了一次点击！";
-				user.setTestResult(false);
-				user.setNumOfSelect(String.valueOf(numOfSelect));
-				setTitle();
-			}
+		
+		Rectangle rectangle = listButton.get(0).getBounds();
+		Point point = new Point(mousePoint.x, mousePoint.y);
+		SwingUtilities.convertPointFromScreen(point, selectPanel);
+		if (rectangle.contains(point)) {
+			keyT="";
+			logT = "您点中了目标！";
+			user.setTestResult(true);
+			user.setNumOfSelect(String.valueOf(numOfSelect));
+			setTitle();
 		}else {
-			Rectangle rectangle = listButton.get(0).getBounds();
-			Point point = new Point(mousePoint.x, mousePoint.y);
-			SwingUtilities.convertPointFromScreen(point, selectPanel);
-			if (rectangle.contains(point)) {
-				keyT="";
-				logT = "您点中了目标！";
-				user.setTestResult(true);
-				user.setNumOfSelect(String.valueOf(numOfSelect));
-				setTitle();
-			}else {
-				keyT="";
-				logT = "您进行了一次点击！";
-				user.setTestResult(false);
-				user.setNumOfSelect(String.valueOf(numOfSelect));
-				setTitle();
-			}
+			keyT="";
+			logT = "您进行了一次点击！";
+			user.setTestResult(false);
+			user.setNumOfSelect(String.valueOf(numOfSelect));
+			setTitle();
 		}
 	}
 
 	
 	public void setTitle() {
-		mainFrame.setTitle("目标选择实验 : "+ testT + areaT + keyT +logT);
+		mainFrame.setTitle("目标选择实验 : "+ areaT + keyT +logT);
 	}
 	
 	
@@ -769,7 +491,7 @@ public class VoiceSelect {
 	}
 	
 	public void initFrame() {
-		mainFrame =new JFrame();
+		mainFrame =new JFrame("语音目标选择实验");
 		mainFrame.setSize(1350, 950);
 		mainFrame.setLocation(10,10);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -801,8 +523,6 @@ public class VoiceSelect {
 					objWidth=30;
 					objHeight=30;
 					areaT="实验1； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum=0;
 					addBtnToPanel();
@@ -810,7 +530,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("1");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button1.setBackground(Color.GRAY);
+					button1.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -822,12 +542,10 @@ public class VoiceSelect {
 		button2.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button3")) {
-					objWidth=30;
-					objHeight=30;
+				if (readPointData("button2")) {
+					objWidth=60;
+					objHeight=60;
 					areaT = "实验2； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -835,7 +553,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("2");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button2.setBackground(Color.GRAY);
+					button2.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -847,12 +565,10 @@ public class VoiceSelect {
 		button3.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button5")) {
-					objWidth=30;
-					objHeight=30;
+				if (readPointData("button3")) {
+					objWidth=90;
+					objHeight=90;
 					areaT = "实验3； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -860,7 +576,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("3");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button3.setBackground(Color.GRAY);
+					button3.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -872,12 +588,10 @@ public class VoiceSelect {
 		button4.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button7")) {
-					objWidth=60;
-					objHeight=60;
+				if (readPointData("button4")) {
+					objWidth=30;
+					objHeight=30;
 					areaT = "实验4； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -885,7 +599,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("4");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button4.setBackground(Color.GRAY);
+					button4.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -897,12 +611,10 @@ public class VoiceSelect {
 		button5.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button9")) {
+				if (readPointData("button5")) {
 					objWidth=60;
 					objHeight=60;
 					areaT = "实验5； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -910,7 +622,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("5");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button5.setBackground(Color.GRAY);
+					button5.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -922,20 +634,18 @@ public class VoiceSelect {
 		button6.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button11")) {
-					objWidth=60;
-					objHeight=60;
+				if (readPointData("button6")) {
+					objWidth=90;
+					objHeight=90;
 					areaT = "实验6； ";
-					logT="实验开始";
 					setTitle();
-					keyT="";
 					voiceNum = 0;
 					addBtnToPanel();
 					mainFrame.requestFocus();
 					enter();
 					user.setButtonName("6");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button6.setBackground(Color.GRAY);
+					button6.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -947,12 +657,10 @@ public class VoiceSelect {
 		button7.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button13")) {
-					objWidth=90;
-					objHeight=90;
+				if (readPointData("button7")) {
+					objWidth=30;
+					objHeight=30;
 					areaT = "实验7； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -960,7 +668,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("7");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button7.setBackground(Color.GRAY);
+					button7.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -972,12 +680,10 @@ public class VoiceSelect {
 		button8.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button15")) {
-					objWidth=90;
-					objHeight=90;
+				if (readPointData("button8")) {
+					objWidth=60;
+					objHeight=60;
 					areaT = "实验8； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -985,7 +691,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("8");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button8.setBackground(Color.GRAY);
+					button8.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -997,12 +703,10 @@ public class VoiceSelect {
 		button9.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button17")) {
+				if (readPointData("button9")) {
 					objWidth=90;
 					objHeight=90;
 					areaT = "实验9； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1010,7 +714,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("9");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button9.setBackground(Color.GRAY);
+					button9.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1024,12 +728,10 @@ public class VoiceSelect {
 		button10.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button2")) {
+				if (readPointData("button1")) {
 					objWidth=30;
 					objHeight=30;
 					areaT="实验10； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum=0;
 					addBtnToPanel();
@@ -1037,7 +739,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("10");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button10.setBackground(Color.GRAY);
+					button10.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1049,12 +751,10 @@ public class VoiceSelect {
 		button11.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button4")) {
-					objWidth=30;
-					objHeight=30;
+				if (readPointData("button2")) {
+					objWidth=60;
+					objHeight=60;
 					areaT = "实验11； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1062,7 +762,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("11");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button11.setBackground(Color.GRAY);
+					button11.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1074,12 +774,10 @@ public class VoiceSelect {
 		button12.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button6")) {
-					objWidth=30;
-					objHeight=30;
+				if (readPointData("button3")) {
+					objWidth=90;
+					objHeight=90;
 					areaT = "实验12； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1087,7 +785,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("12");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button12.setBackground(Color.GRAY);
+					button12.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1099,12 +797,10 @@ public class VoiceSelect {
 		button13.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button8")) {
-					objWidth=60;
-					objHeight=60;
+				if (readPointData("button4")) {
+					objWidth=30;
+					objHeight=30;
 					areaT = "实验13； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1112,7 +808,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("13");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button13.setBackground(Color.GRAY);
+					button13.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1124,12 +820,10 @@ public class VoiceSelect {
 		button14.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button10")) {
+				if (readPointData("button5")) {
 					objWidth=60;
 					objHeight=60;
 					areaT = "实验14； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1137,7 +831,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("14");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button14.setBackground(Color.GRAY);
+					button14.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1149,11 +843,10 @@ public class VoiceSelect {
 		button15.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button12")) {
-					objWidth=60;
-					objHeight=60;
+				if (readPointData("button6")) {
+					objWidth=90;
+					objHeight=90;
 					areaT = "实验15； ";
-					logT="实验开始";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1161,7 +854,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("15");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button15.setBackground(Color.GRAY);
+					button15.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1173,11 +866,10 @@ public class VoiceSelect {
 		button16.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button14")) {
-					objWidth=90;
-					objHeight=90;
+				if (readPointData("button7")) {
+					objWidth=30;
+					objHeight=30;
 					areaT = "实验16； ";
-					logT="实验开始";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1185,7 +877,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("16");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button16.setBackground(Color.GRAY);
+					button16.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1197,11 +889,10 @@ public class VoiceSelect {
 		button17.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button16")) {
-					objWidth=90;
-					objHeight=90;
+				if (readPointData("button8")) {
+					objWidth=60;
+					objHeight=60;
 					areaT = "实验17； ";
-					logT="实验开始";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1209,7 +900,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("17");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button17.setBackground(Color.GRAY);
+					button17.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1221,11 +912,10 @@ public class VoiceSelect {
 		button18.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button18")) {
+				if (readPointData("button9")) {
 					objWidth=90;
 					objHeight=90;
 					areaT = "实验18； ";
-					logT="实验开始";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1233,7 +923,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("18");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button18.setBackground(Color.GRAY);
+					button18.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1247,12 +937,10 @@ public class VoiceSelect {
 		button19.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button17")) {
-					objWidth=90;
-					objHeight=90;
+				if (readPointData("button1")) {
+					objWidth=30;
+					objHeight=30;
 					areaT="实验19； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum=0;
 					addBtnToPanel();
@@ -1260,7 +948,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("19");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button19.setBackground(Color.GRAY);
+					button19.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1272,12 +960,10 @@ public class VoiceSelect {
 		button20.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button15")) {
-					objWidth=90;
-					objHeight=90;
+				if (readPointData("button2")) {
+					objWidth=60;
+					objHeight=60;
 					areaT = "实验20； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1285,7 +971,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("20");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button20.setBackground(Color.GRAY);
+					button20.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1297,12 +983,10 @@ public class VoiceSelect {
 		button21.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button13")) {
+				if (readPointData("button3")) {
 					objWidth=90;
 					objHeight=90;
 					areaT = "实验21； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1310,7 +994,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("21");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button21.setBackground(Color.GRAY);
+					button21.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1322,12 +1006,10 @@ public class VoiceSelect {
 		button22.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button11")) {
-					objWidth=60;
-					objHeight=60;
+				if (readPointData("button4")) {
+					objWidth=30;
+					objHeight=30;
 					areaT = "实验22； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1335,7 +1017,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("22");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button22.setBackground(Color.GRAY);
+					button22.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1347,12 +1029,10 @@ public class VoiceSelect {
 		button23.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button9")) {
+				if (readPointData("button5")) {
 					objWidth=60;
 					objHeight=60;
 					areaT = "实验23； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1360,7 +1040,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("23");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button23.setBackground(Color.GRAY);
+					button23.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1372,12 +1052,10 @@ public class VoiceSelect {
 		button24.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button7")) {
-					objWidth=60;
-					objHeight=60;
+				if (readPointData("button6")) {
+					objWidth=90;
+					objHeight=90;
 					areaT = "实验24； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1385,7 +1063,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("24");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button24.setBackground(Color.GRAY);
+					button24.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1397,12 +1075,10 @@ public class VoiceSelect {
 		button25.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button5")) {
+				if (readPointData("button7")) {
 					objWidth=30;
 					objHeight=30;
 					areaT = "实验25； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1410,7 +1086,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("25");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button25.setBackground(Color.GRAY);
+					button25.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1422,12 +1098,10 @@ public class VoiceSelect {
 		button26.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button3")) {
-					objWidth=30;
-					objHeight=30;
+				if (readPointData("button8")) {
+					objWidth=60;
+					objHeight=60;
 					areaT = "实验26； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1435,7 +1109,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("26");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button26.setBackground(Color.GRAY);
+					button26.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1447,12 +1121,10 @@ public class VoiceSelect {
 		button27.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button1")) {
-					objWidth=30;
-					objHeight=30;
+				if (readPointData("button9")) {
+					objWidth=90;
+					objHeight=90;
 					areaT = "实验27； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1460,7 +1132,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("27");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button27.setBackground(Color.GRAY);
+					button27.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1472,11 +1144,10 @@ public class VoiceSelect {
 		button28.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button18")) {
-					objWidth=90;
-					objHeight=90;
+				if (readPointData("button8")) {
+					objWidth=60;
+					objHeight=60;
 					areaT = "实验28； ";
-					logT="实验开始";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1484,7 +1155,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("28");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button28.setBackground(Color.GRAY);
+					button28.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1496,12 +1167,10 @@ public class VoiceSelect {
 		button29.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button16")) {
+				if (readPointData("button9")) {
 					objWidth=90;
 					objHeight=90;
 					areaT = "实验29； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1509,7 +1178,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("29");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button29.setBackground(Color.GRAY);
+					button29.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1522,12 +1191,10 @@ public class VoiceSelect {
 		button30.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button14")) {
-					objWidth=90;
-					objHeight=90;
+				if (readPointData("button1")) {
+					objWidth=30;
+					objHeight=30;
 					areaT="实验30； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum=0;
 					addBtnToPanel();
@@ -1535,7 +1202,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("30");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button30.setBackground(Color.GRAY);
+					button30.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1547,12 +1214,10 @@ public class VoiceSelect {
 		button31.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button12")) {
+				if (readPointData("button2")) {
 					objWidth=60;
 					objHeight=60;
 					areaT = "实验31； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1560,7 +1225,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("31");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button31.setBackground(Color.GRAY);
+					button31.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1572,12 +1237,10 @@ public class VoiceSelect {
 		button32.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button10")) {
-					objWidth=60;
-					objHeight=60;
+				if (readPointData("button3")) {
+					objWidth=90;
+					objHeight=90;
 					areaT = "实验32； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1585,7 +1248,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("32");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button32.setBackground(Color.GRAY);
+					button32.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1597,12 +1260,10 @@ public class VoiceSelect {
 		button33.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button8")) {
-					objWidth=60;
-					objHeight=60;
+				if (readPointData("button4")) {
+					objWidth=30;
+					objHeight=30;
 					areaT = "实验33； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1610,7 +1271,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("33");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button33.setBackground(Color.GRAY);
+					button33.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1622,12 +1283,10 @@ public class VoiceSelect {
 		button34.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button6")) {
-					objWidth=30;
-					objHeight=30;
+				if (readPointData("button5")) {
+					objWidth=60;
+					objHeight=60;
 					areaT = "实验34； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1635,7 +1294,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("34");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button34.setBackground(Color.GRAY);
+					button34.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1647,12 +1306,10 @@ public class VoiceSelect {
 		button35.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button4")) {
-					objWidth=30;
-					objHeight=30;
+				if (readPointData("button6")) {
+					objWidth=90;
+					objHeight=90;
 					areaT = "实验35； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1660,7 +1317,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("35");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button35.setBackground(Color.GRAY);
+					button35.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1672,12 +1329,10 @@ public class VoiceSelect {
 		button36.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button2")) {
+				if (readPointData("button7")) {
 					objWidth=30;
 					objHeight=30;
 					areaT = "实验36； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1685,7 +1340,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("36");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button36.setBackground(Color.GRAY);
+					button36.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1697,12 +1352,10 @@ public class VoiceSelect {
 		button37.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button11")) {
+				if (readPointData("button8")) {
 					objWidth=60;
 					objHeight=60;
 					areaT = "实验37； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1710,7 +1363,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("37");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button37.setBackground(Color.GRAY);
+					button37.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1722,12 +1375,10 @@ public class VoiceSelect {
 		button38.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button18")) {
+				if (readPointData("button9")) {
 					objWidth=90;
 					objHeight=90;
 					areaT = "实验38； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1735,7 +1386,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("38");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button38.setBackground(Color.GRAY);
+					button38.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1753,8 +1404,6 @@ public class VoiceSelect {
 					objWidth=30;
 					objHeight=30;
 					areaT="实验39； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum=0;
 					addBtnToPanel();
@@ -1762,7 +1411,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("39");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button39.setBackground(Color.GRAY);
+					button39.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1775,11 +1424,9 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button2")) {
-					objWidth=30;
-					objHeight=30;
+					objWidth=60;
+					objHeight=60;
 					areaT = "实验40； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1787,7 +1434,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("40");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button40.setBackground(Color.GRAY);
+					button40.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1800,11 +1447,9 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button3")) {
-					objWidth=30;
-					objHeight=30;
+					objWidth=90;
+					objHeight=90;
 					areaT = "实验41； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1812,7 +1457,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("41");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button41.setBackground(Color.GRAY);
+					button41.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1828,8 +1473,6 @@ public class VoiceSelect {
 					objWidth=30;
 					objHeight=30;
 					areaT = "实验42； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1837,7 +1480,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("42");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button42.setBackground(Color.GRAY);
+					button42.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1850,11 +1493,9 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button5")) {
-					objWidth=30;
-					objHeight=30;
+					objWidth=60;
+					objHeight=60;
 					areaT = "实验43； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1862,7 +1503,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("43");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button43.setBackground(Color.GRAY);
+					button43.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1875,11 +1516,9 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button6")) {
-					objWidth=30;
-					objHeight=30;
+					objWidth=90;
+					objHeight=90;
 					areaT = "实验44； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1887,7 +1526,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("44");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button44.setBackground(Color.GRAY);
+					button44.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1900,11 +1539,9 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button7")) {
-					objWidth=60;
-					objHeight=60;
+					objWidth=30;
+					objHeight=30;
 					areaT = "实验45； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1912,7 +1549,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("45");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button45.setBackground(Color.GRAY);
+					button45.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1928,8 +1565,6 @@ public class VoiceSelect {
 					objWidth=60;
 					objHeight=60;
 					areaT = "实验46； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1937,7 +1572,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("46");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button46.setBackground(Color.GRAY);
+					button46.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1950,11 +1585,9 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button9")) {
-					objWidth=60;
-					objHeight=60;
+					objWidth=90;
+					objHeight=90;
 					areaT = "实验47； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -1962,7 +1595,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("47");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button47.setBackground(Color.GRAY);
+					button47.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -1976,12 +1609,10 @@ public class VoiceSelect {
 		button48.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button10")) {
-					objWidth=60;
-					objHeight=60;
+				if (readPointData("button1")) {
+					objWidth=30;
+					objHeight=30;
 					areaT="实验48； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum=0;
 					addBtnToPanel();
@@ -1989,7 +1620,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("48");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button48.setBackground(Color.GRAY);
+					button48.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -2001,12 +1632,10 @@ public class VoiceSelect {
 		button49.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button12")) {
+				if (readPointData("button2")) {
 					objWidth=60;
 					objHeight=60;
 					areaT = "实验49； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -2014,7 +1643,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("49");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button49.setBackground(Color.GRAY);
+					button49.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -2026,12 +1655,10 @@ public class VoiceSelect {
 		button50.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button13")) {
+				if (readPointData("button3")) {
 					objWidth=90;
 					objHeight=90;
 					areaT = "实验50； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -2039,7 +1666,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("50");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button50.setBackground(Color.GRAY);
+					button50.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -2051,12 +1678,10 @@ public class VoiceSelect {
 		button51.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button14")) {
-					objWidth=90;
-					objHeight=90;
+				if (readPointData("button4")) {
+					objWidth=30;
+					objHeight=30;
 					areaT = "实验51； ";
-					keyT="";
-					logT="实验开始";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -2064,7 +1689,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("51");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button51.setBackground(Color.GRAY);
+					button51.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -2076,12 +1701,10 @@ public class VoiceSelect {
 		button52.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button15")) {
-					objWidth=90;
-					objHeight=90;
+				if (readPointData("button5")) {
+					objWidth=60;
+					objHeight=60;
 					areaT = "实验52； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -2089,7 +1712,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("52");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button52.setBackground(Color.GRAY);
+					button52.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -2101,12 +1724,10 @@ public class VoiceSelect {
 		button53.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button16")) {
+				if (readPointData("button6")) {
 					objWidth=90;
 					objHeight=90;
 					areaT = "实验53； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -2114,7 +1735,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("53");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button53.setBackground(Color.GRAY);
+					button53.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -2126,12 +1747,10 @@ public class VoiceSelect {
 		button54.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (readPointData("button17")) {
-					objWidth=90;
-					objHeight=90;
+				if (readPointData("button7")) {
+					objWidth=30;
+					objHeight=30;
 					areaT = "实验54； ";
-					logT="实验开始";
-					keyT="";
 					setTitle();
 					voiceNum = 0;
 					addBtnToPanel();
@@ -2139,7 +1758,7 @@ public class VoiceSelect {
 					enter();
 					user.setButtonName("54");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
-					button54.setBackground(Color.GRAY);
+					button54.setBackground(Color.GREEN);
 				}
 			}
 		});
@@ -2206,386 +1825,68 @@ public class VoiceSelect {
 		mainPanel.add(button54);
 		
 		
-		buttonA = new JButton("方法一");
-		buttonA.setBounds(240, 60, 100, 40);
-		buttonA.setBackground(Color.GRAY);
-		buttonA.setOpaque(true);
-		buttonA.setBorder(new LineBorder(Color.BLACK));
-		buttonA.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				testFlag = 1;
-				
-				testT="方法一； ";areaT="";keyT="";logT="";
-				setTitle();
-				
-				selectPanel.removeAll();
-				selectPanel.repaint(); 
-				
-				buttonA.setBackground(Color.GRAY);
-				buttonB.setBackground(Color.WHITE);
-				buttonC.setBackground(Color.WHITE);
-				
-				button1.setBackground(Color.WHITE);
-				button2.setBackground(Color.WHITE);
-				button3.setBackground(Color.WHITE);
-				button4.setBackground(Color.WHITE);
-				button5.setBackground(Color.WHITE);
-				button6.setBackground(Color.WHITE);
-				button7.setBackground(Color.WHITE);
-				button8.setBackground(Color.WHITE);
-				button9.setBackground(Color.WHITE);
-				button10.setBackground(Color.WHITE);
-				button11.setBackground(Color.WHITE);
-				button12.setBackground(Color.WHITE);
-				button13.setBackground(Color.WHITE);
-				button14.setBackground(Color.WHITE);
-				button15.setBackground(Color.WHITE);
-				button16.setBackground(Color.WHITE);
-				button17.setBackground(Color.WHITE);
-				button18.setBackground(Color.WHITE);
-				button19.setBackground(Color.WHITE);
-				button20.setBackground(Color.WHITE);
-				button21.setBackground(Color.WHITE);
-				button22.setBackground(Color.WHITE);
-				button23.setBackground(Color.WHITE);
-				button24.setBackground(Color.WHITE);
-				button25.setBackground(Color.WHITE);
-				button26.setBackground(Color.WHITE);
-				button27.setBackground(Color.WHITE);
-				button28.setBackground(Color.WHITE);
-				button29.setBackground(Color.WHITE);
-				button30.setBackground(Color.WHITE);
-				button31.setBackground(Color.WHITE);
-				button32.setBackground(Color.WHITE);
-				button33.setBackground(Color.WHITE);
-				button34.setBackground(Color.WHITE);
-				button35.setBackground(Color.WHITE);
-				button36.setBackground(Color.WHITE);
-				button37.setBackground(Color.WHITE);
-				button38.setBackground(Color.WHITE);
-				button39.setBackground(Color.WHITE);
-				button40.setBackground(Color.WHITE);
-				button41.setBackground(Color.WHITE);
-				button42.setBackground(Color.WHITE);
-				button43.setBackground(Color.WHITE);
-				button44.setBackground(Color.WHITE);
-				button45.setBackground(Color.WHITE);
-				button46.setBackground(Color.WHITE);
-				button47.setBackground(Color.WHITE);
-				button48.setBackground(Color.WHITE);
-				button49.setBackground(Color.WHITE);
-				button50.setBackground(Color.WHITE);
-				button51.setBackground(Color.WHITE);
-				button52.setBackground(Color.WHITE);
-				button53.setBackground(Color.WHITE);
-				button54.setBackground(Color.WHITE);
-			}
-		});
-		buttonB = new JButton("方法二");
-		buttonB.setBounds(240, 120, 100, 40);
-		buttonB.setBackground(Color.WHITE);
-		buttonB.setOpaque(true);
-		buttonB.setBorder(new LineBorder(Color.BLACK));
-		buttonB.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				testFlag = 2;
-				selectPanel.removeAll();
-				selectPanel.repaint(); 
-				testT="方法二； ";areaT="";keyT="";logT="";
-				setTitle();
-				
-				buttonA.setBackground(Color.WHITE);
-				buttonB.setBackground(Color.GRAY);
-				buttonC.setBackground(Color.WHITE);
-				
-				button1.setBackground(Color.WHITE);
-				button2.setBackground(Color.WHITE);
-				button3.setBackground(Color.WHITE);
-				button4.setBackground(Color.WHITE);
-				button5.setBackground(Color.WHITE);
-				button6.setBackground(Color.WHITE);
-				button7.setBackground(Color.WHITE);
-				button8.setBackground(Color.WHITE);
-				button9.setBackground(Color.WHITE);
-				button10.setBackground(Color.WHITE);
-				button11.setBackground(Color.WHITE);
-				button12.setBackground(Color.WHITE);
-				button13.setBackground(Color.WHITE);
-				button14.setBackground(Color.WHITE);
-				button15.setBackground(Color.WHITE);
-				button16.setBackground(Color.WHITE);
-				button17.setBackground(Color.WHITE);
-				button18.setBackground(Color.WHITE);
-				button19.setBackground(Color.WHITE);
-				button20.setBackground(Color.WHITE);
-				button21.setBackground(Color.WHITE);
-				button22.setBackground(Color.WHITE);
-				button23.setBackground(Color.WHITE);
-				button24.setBackground(Color.WHITE);
-				button25.setBackground(Color.WHITE);
-				button26.setBackground(Color.WHITE);
-				button27.setBackground(Color.WHITE);
-				button28.setBackground(Color.WHITE);
-				button29.setBackground(Color.WHITE);
-				button30.setBackground(Color.WHITE);
-				button31.setBackground(Color.WHITE);
-				button32.setBackground(Color.WHITE);
-				button33.setBackground(Color.WHITE);
-				button34.setBackground(Color.WHITE);
-				button35.setBackground(Color.WHITE);
-				button36.setBackground(Color.WHITE);
-				button37.setBackground(Color.WHITE);
-				button38.setBackground(Color.WHITE);
-				button39.setBackground(Color.WHITE);
-				button40.setBackground(Color.WHITE);
-				button41.setBackground(Color.WHITE);
-				button42.setBackground(Color.WHITE);
-				button43.setBackground(Color.WHITE);
-				button44.setBackground(Color.WHITE);
-				button45.setBackground(Color.WHITE);
-				button46.setBackground(Color.WHITE);
-				button47.setBackground(Color.WHITE);
-				button48.setBackground(Color.WHITE);
-				button49.setBackground(Color.WHITE);
-				button50.setBackground(Color.WHITE);
-				button51.setBackground(Color.WHITE);
-				button52.setBackground(Color.WHITE);
-				button53.setBackground(Color.WHITE);
-				button54.setBackground(Color.WHITE);
-			}
-		});
-		buttonC = new JButton("方法三");
-		buttonC.setBounds(240, 180, 100, 40);
-		buttonC.setBackground(Color.WHITE);
-		buttonC.setOpaque(true);
-		buttonC.setBorder(new LineBorder(Color.BLACK));
-		buttonC.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				testFlag = 3;
-				
-				selectPanel.removeAll();
-				selectPanel.repaint(); 
-				testT="方法三； ";areaT="";keyT="";logT="";
-				setTitle();
-				buttonA.setBackground(Color.WHITE);
-				buttonB.setBackground(Color.WHITE);
-				buttonC.setBackground(Color.GRAY);
-				
-				button1.setBackground(Color.WHITE);
-				button2.setBackground(Color.WHITE);
-				button3.setBackground(Color.WHITE);
-				button4.setBackground(Color.WHITE);
-				button5.setBackground(Color.WHITE);
-				button6.setBackground(Color.WHITE);
-				button7.setBackground(Color.WHITE);
-				button8.setBackground(Color.WHITE);
-				button9.setBackground(Color.WHITE);
-				button10.setBackground(Color.WHITE);
-				button11.setBackground(Color.WHITE);
-				button12.setBackground(Color.WHITE);
-				button13.setBackground(Color.WHITE);
-				button14.setBackground(Color.WHITE);
-				button15.setBackground(Color.WHITE);
-				button16.setBackground(Color.WHITE);
-				button17.setBackground(Color.WHITE);
-				button18.setBackground(Color.WHITE);
-				button19.setBackground(Color.WHITE);
-				button20.setBackground(Color.WHITE);
-				button21.setBackground(Color.WHITE);
-				button22.setBackground(Color.WHITE);
-				button23.setBackground(Color.WHITE);
-				button24.setBackground(Color.WHITE);
-				button25.setBackground(Color.WHITE);
-				button26.setBackground(Color.WHITE);
-				button27.setBackground(Color.WHITE);
-				button28.setBackground(Color.WHITE);
-				button29.setBackground(Color.WHITE);
-				button30.setBackground(Color.WHITE);
-				button31.setBackground(Color.WHITE);
-				button32.setBackground(Color.WHITE);
-				button33.setBackground(Color.WHITE);
-				button34.setBackground(Color.WHITE);
-				button35.setBackground(Color.WHITE);
-				button36.setBackground(Color.WHITE);
-				button37.setBackground(Color.WHITE);
-				button38.setBackground(Color.WHITE);
-				button39.setBackground(Color.WHITE);
-				button40.setBackground(Color.WHITE);
-				button41.setBackground(Color.WHITE);
-				button42.setBackground(Color.WHITE);
-				button43.setBackground(Color.WHITE);
-				button44.setBackground(Color.WHITE);
-				button45.setBackground(Color.WHITE);
-				button46.setBackground(Color.WHITE);
-				button47.setBackground(Color.WHITE);
-				button48.setBackground(Color.WHITE);
-				button49.setBackground(Color.WHITE);
-				button50.setBackground(Color.WHITE);
-				button51.setBackground(Color.WHITE);
-				button52.setBackground(Color.WHITE);
-				button53.setBackground(Color.WHITE);
-				button54.setBackground(Color.WHITE);
-			}
-		});
-		
-		mainPanel.add(buttonA);
-		mainPanel.add(buttonB);
-		mainPanel.add(buttonC);
-		
-		String text = "使用说明：\n    第一步，选择方法（默认为方法一）；\n    第二步，选择实验号码（1-54）；\n    第三步，根据所选方法进行目标选择。\n当所选方法实验全部测完时请重复第一步";
-		JTextArea textPane = new JTextArea(text);
-		textPane.setBounds(30, 730, 310, 150);
-		textPane.setOpaque(false);
-		textPane.setEditable(false);
-		mainPanel.add(textPane);
+//		buttonA = new JButton("方法一");
+//		buttonA.setBounds(240, 60, 100, 40);
+//		buttonA.setBackground(Color.WHITE);
+//		buttonA.setOpaque(true);
+//		buttonA.setBorder(new LineBorder(Color.BLACK));
+//		buttonA.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				buttonA.setBackground(Color.GREEN);
+//			}
+//		});
+//		buttonB = new JButton("方法二");
+//		buttonB.setBounds(240, 120, 100, 40);
+//		buttonB.setBackground(Color.WHITE);
+//		buttonB.setOpaque(true);
+//		buttonB.setBorder(new LineBorder(Color.BLACK));
+//		buttonB.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				buttonB.setBackground(Color.GREEN);
+//			}
+//		});
+//		buttonC = new JButton("方法三");
+//		buttonC.setBounds(240, 180, 100, 40);
+//		buttonC.setBackground(Color.WHITE);
+//		buttonC.setOpaque(true);
+//		buttonC.setBorder(new LineBorder(Color.BLACK));
+//		buttonC.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				buttonC.setBackground(Color.GREEN);
+//			}
+//		});
+//		
+//		mainPanel.add(buttonA);
+//		mainPanel.add(buttonB);
+//		mainPanel.add(buttonC);
+//		
+//		String text = "使用说明：";
+//		JTextArea textPane = new JTextArea(text);
+//		textPane.setBounds(30, 730, 310, 150);
+//		textPane.setOpaque(false);
+//		textPane.setEditable(false);
+//		mainPanel.add(textPane);
 		
 		mainContentPane.add(selectPanel);
 		mainContentPane.add(mainPanel);
 		
 		mainFrame.setResizable(false);
 		mainFrame.setVisible(true);
-		
-		testT="方法一； ";
-		setTitle();
-		
 	}
 	
 	public void enter() {
 		mousePoint =  new Point(frameWidth/2,frameWidth/2);//计算出frame中心坐标
 		SwingUtilities.convertPointToScreen(mousePoint, selectPanel);//转化成frame的坐标系
-
+		//moveMouse(mousePoint);//移动鼠标
 		layerNum = 0;
 		setLayerDistance();
-		
-		switch (testFlag) {
-		case 1:
-			paintNine();//画标记
-			break;
-		case 2:
-			paintNine2();//画标记
-			selectButton();
-			break;
-		case 3:
-			paintFlag();//画标记
-			break;
-		}
-		
+		paintNine();//画标记
 		numOfSelect = 0;
 		setTitle();
 	}
-	
-	
-	public void paintFlag() {
-		Point myPoint = new Point(mousePoint.x,mousePoint.y);
-		SwingUtilities.convertPointFromScreen(myPoint, selectPanel);
-		int mX = myPoint.x;
-		int mY = myPoint.y;
-		Graphics graphics = selectPanel.getGraphics();
-		selectPanel.paint(graphics);
-		
-		if(layerNum<3) {
-			graphics.setColor(Color.BLUE);
-			graphics.fillOval(mX - distanceOfEachLayer - 2, mY - distanceOfEachLayer - 2 , 4, 4);
-			graphics.fillOval(mX - 2, mY - distanceOfEachLayer - 2 , 4, 4);
-			graphics.fillOval(mX + distanceOfEachLayer - 2, mY - distanceOfEachLayer- 2, 4, 4);
-			graphics.fillOval(mX - distanceOfEachLayer - 2, mY - 2, 4, 4);
-			graphics.fillOval(mX- 2,mY- 2, 4, 4);
-			graphics.fillOval(mX + distanceOfEachLayer - 2, mY - 2, 4, 4);
-			graphics.fillOval(mX - distanceOfEachLayer - 2, mY + distanceOfEachLayer- 2, 4, 4);
-			graphics.fillOval(mX - 2, mY + distanceOfEachLayer- 2, 4, 4);
-			graphics.fillOval(mX + distanceOfEachLayer - 2, mY + distanceOfEachLayer- 2, 4, 4);
-			
-			graphics.drawString("1",mX - distanceOfEachLayer , mY - distanceOfEachLayer);
-			graphics.drawString("2",mX , mY - distanceOfEachLayer);
-			graphics.drawString("3",mX + distanceOfEachLayer , mY - distanceOfEachLayer);
-			graphics.drawString("4",mX - distanceOfEachLayer , mY );
-			graphics.drawString("5",mX , mY );
-			graphics.drawString("6",mX + distanceOfEachLayer , mY );
-			graphics.drawString("7",mX - distanceOfEachLayer , mY + distanceOfEachLayer);
-			graphics.drawString("8",mX , mY + distanceOfEachLayer);
-			graphics.drawString("9",mX + distanceOfEachLayer , mY + distanceOfEachLayer);
-		}
-
-		graphics.setColor(Color.RED);
-		graphics.drawLine(mX,mY,mX,mY-1000);
-		graphics.drawLine(mX,mY,mX,mY+1000);
-		graphics.drawLine(mX,mY,mX-1000,mY);
-		graphics.drawLine(mX,mY,mX+1000,mY);
-		
-	}
-	
-	// 实现选中区域内的按钮
-	public void selectButton() {
-		// 得出选中的区域
-		Point myPoint = new Point(mousePoint.x,mousePoint.y);
-		SwingUtilities.convertPointFromScreen(myPoint, selectPanel);
-		int mX = myPoint.x;
-		int mY = myPoint.y;
-		Rectangle rect = new Rectangle();
-		rect.setBounds(mX - distanceOfEachLayer*3/2, mY - distanceOfEachLayer*3/2, distanceOfEachLayer*3, distanceOfEachLayer*3);
-		
-		// 筛选出区域中的按钮
-		for (int index=1 ;index < listButton.size() ;index++ ) {
-			Rectangle rectButton = listButton.get(index).getBounds();
-			Point one = new Point(rectButton.x, rectButton.y);
-			Point two = new Point(rectButton.x + rectButton.width, rectButton.y);
-			Point three = new Point(rectButton.x, rectButton.y + rectButton.height);
-			Point four = new Point(rectButton.x + rectButton.width, rectButton.y + rectButton.height);
-			if (rect.contains(one)||rect.contains(two)||rect.contains(three)||rect.contains(four)) {
-				listButton.get(index).setBackground(Color.LIGHT_GRAY);
-			}else {
-				listButton.get(index).setBackground(Color.WHITE);
-			}
-		}
-		
-	}
-	
-	// 依据mousePoint和distanceOfEachLayer画出九个区域的中心点（每个区域带边框）
-	public void paintNine2() {
-		Point myPoint = new Point(mousePoint.x,mousePoint.y);
-		SwingUtilities.convertPointFromScreen(myPoint, selectPanel);
-		int mX = myPoint.x;
-		int mY = myPoint.y;
-		Graphics graphics = selectPanel.getGraphics();
-		selectPanel.paint(graphics);
-		
-		graphics.setColor(Color.BLUE);
-		graphics.fillOval(mX - distanceOfEachLayer - 2, mY - distanceOfEachLayer - 2 , 4, 4);
-		graphics.fillOval(mX - 2, mY - distanceOfEachLayer - 2 , 4, 4);
-		graphics.fillOval(mX + distanceOfEachLayer - 2, mY - distanceOfEachLayer- 2, 4, 4);
-		graphics.fillOval(mX - distanceOfEachLayer - 2, mY - 2, 4, 4);
-		graphics.fillOval(mX- 2,mY- 2, 4, 4);
-		graphics.fillOval(mX + distanceOfEachLayer - 2, mY - 2, 4, 4);
-		graphics.fillOval(mX - distanceOfEachLayer - 2, mY + distanceOfEachLayer- 2, 4, 4);
-		graphics.fillOval(mX - 2, mY + distanceOfEachLayer- 2, 4, 4);
-		graphics.fillOval(mX + distanceOfEachLayer - 2, mY + distanceOfEachLayer- 2, 4, 4);
-		
-		graphics.drawString("1",mX - distanceOfEachLayer , mY - distanceOfEachLayer);
-		graphics.drawString("2",mX , mY - distanceOfEachLayer);
-		graphics.drawString("3",mX + distanceOfEachLayer , mY - distanceOfEachLayer);
-		graphics.drawString("4",mX - distanceOfEachLayer , mY );
-		graphics.drawString("5",mX , mY );
-		graphics.drawString("6",mX + distanceOfEachLayer , mY );
-		graphics.drawString("7",mX - distanceOfEachLayer , mY + distanceOfEachLayer);
-		graphics.drawString("8",mX , mY + distanceOfEachLayer);
-		graphics.drawString("9",mX + distanceOfEachLayer , mY + distanceOfEachLayer);
-		
-		//内 竖线
-		graphics.drawLine(mX - distanceOfEachLayer*3/2, mY - distanceOfEachLayer/2, mX + distanceOfEachLayer*3/2, mY - distanceOfEachLayer/2);
-		graphics.drawLine(mX - distanceOfEachLayer*3/2, mY + distanceOfEachLayer/2, mX + distanceOfEachLayer*3/2, mY + distanceOfEachLayer/2);
-		graphics.drawLine(mX - distanceOfEachLayer/2, mY - distanceOfEachLayer*3/2, mX - distanceOfEachLayer/2, mY + distanceOfEachLayer*3/2);
-		graphics.drawLine(mX + distanceOfEachLayer/2, mY - distanceOfEachLayer*3/2, mX + distanceOfEachLayer/2, mY + distanceOfEachLayer*3/2);
-		//外边框
-		graphics.drawLine(mX - distanceOfEachLayer*3/2, mY - distanceOfEachLayer*3/2, mX + distanceOfEachLayer*3/2, mY - distanceOfEachLayer*3/2);
-		graphics.drawLine(mX - distanceOfEachLayer*3/2, mY - distanceOfEachLayer*3/2, mX - distanceOfEachLayer*3/2, mY + distanceOfEachLayer*3/2);
-		graphics.drawLine(mX + distanceOfEachLayer*3/2, mY + distanceOfEachLayer*3/2, mX + distanceOfEachLayer*3/2, mY - distanceOfEachLayer*3/2);
-		graphics.drawLine(mX + distanceOfEachLayer*3/2, mY + distanceOfEachLayer*3/2, mX - distanceOfEachLayer*3/2, mY + distanceOfEachLayer*3/2);
-		
-	}
-	
 	
 	// 计算每层(0-3)深度所需的距离
 	public void setLayerDistance() {
@@ -2776,7 +2077,7 @@ public class VoiceSelect {
 	}
 	
 	public static void main(String[] args) {
-		new VoiceSelect();
+		new VoiceSelecTest1();
 	}
 
 }

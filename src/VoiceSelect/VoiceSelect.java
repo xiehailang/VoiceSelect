@@ -109,6 +109,8 @@ public class VoiceSelect {
 	private JButton buttonA,buttonB,buttonC;
 	private ArrayList<Point> pointList;
 	private ArrayList<JButton> listButton;
+	private ArrayList<JButton> selectListButton;
+	private int selectListButtonNum = 0;
 	
 	private int testFlag = 1;
 
@@ -125,19 +127,19 @@ public class VoiceSelect {
 	String sheetName = "1";
 	// Excel文件sheet页的第一行
 	String title[] = { "序号", "开始"
-			, "语音1开始", "语音1结束", "语音1结果"
-			, "语音2开始", "语音2结束", "语音2结果"
-			, "语音3开始", "语音3结束", "语音3结果"
-			, "语音4开始", "语音4结束", "语音4结果"
-			, "语音5开始", "语音5结束", "语音5结果"
+			, "语音1开始", "语音1结束", "语音1结果", "语音1时长"
+			, "语音2开始", "语音2结束", "语音2结果", "语音2时长"
+			, "语音3开始", "语音3结束", "语音3结果", "语音3时长"
+			, "语音4开始", "语音4结束", "语音4结果", "语音4时长"
+			, "语音5开始", "语音5结束", "语音5结果", "语音5时长"
 			, "结束", "结果","步数"};
 	// Excel文件每一列对应的数据
 	String titleDate[] = { "buttonName", "testStart", 
-			"voice1Start", "voice1End", "voice1Result",
-			"voice2Start", "voice2End", "voice2Result",
-			"voice3Start", "voice3End", "voice3Result",
-			"voice4Start", "voice4End", "voice4Result",
-			"voice5Start", "voice5End", "voice5Result",
+			"voice1Start", "voice1End", "voice1Result","voice1Time",
+			"voice2Start", "voice2End", "voice2Result","voice2Time",
+			"voice3Start", "voice3End", "voice3Result","voice3Time",
+			"voice4Start", "voice4End", "voice4Result","voice4Time",
+			"voice5Start", "voice5End", "voice5Result","voice5Time",
 			"testEnd" , "testResult","numOfSelect"};
 	Data user = new Data();
 	private boolean voiceNumFlag = true;
@@ -545,6 +547,11 @@ public class VoiceSelect {
 			public void keyPressed(KeyEvent e) {
 				super.keyPressed(e);
 				switch (e.getKeyCode()) {
+				case KeyEvent.VK_SPACE:
+					if (selectListButtonNum<54) {
+						selectListButton.get(selectListButtonNum).doClick();
+					}
+					break;
 				case KeyEvent.VK_1:
 					switchPaint(1);
 					break;
@@ -618,6 +625,7 @@ public class VoiceSelect {
 						keyT = "语音识别结束,耗时:"+(recEndTime - recStartTime)+" 毫秒！;  " ;
 						logT = "识别结果为："+textResult;
 						setTitle();
+						setVoiceTime(voiceNum,String.valueOf(recEndTime - recStartTime));
 						setVoiceResult(voiceNum,textResult);
 						break;
 					}
@@ -684,6 +692,26 @@ public class VoiceSelect {
 		}
 	}
 	
+	public void setVoiceTime(int num,String time) {
+		switch (num) {
+		case 1:
+			user.setVoice1Time(time);
+			break;
+		case 2:
+			user.setVoice2Time(time);
+			break;
+		case 3:
+			user.setVoice3Time(time);
+			break;
+		case 4:
+			user.setVoice4Time(time);
+			break;
+		case 5:
+			user.setVoice5Time(time);
+			break;
+		}
+	}
+	
 	// 实现模拟鼠标点击
 	public void mouseClick() {
 		if (testFlag == 2) {
@@ -738,7 +766,7 @@ public class VoiceSelect {
 		String os = System.getProperty("os.name");  
 		File file = new File(desktopPath+"/Desktop/PointData.xls");
 		if(os.toLowerCase().startsWith("win")){  
-			file = new File(desktopPath+"\\PointData.txt");
+			file = new File(desktopPath+"\\PointDatat.txt");
 		}
 		pointList = new ArrayList<Point>();
         try {
@@ -786,6 +814,7 @@ public class VoiceSelect {
 	}
 	
 	public void initFrame() {
+		selectListButton = new ArrayList<JButton>();
 		mainFrame =new JFrame();
 		mainFrame.setSize(1350, 950);
 		mainFrame.setLocation(10,10);
@@ -815,6 +844,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button1")) {
+					selectListButtonNum=1;
 					objWidth=30;
 					objHeight=30;
 					areaT="实验1； ";
@@ -840,6 +870,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button3")) {
+					selectListButtonNum=2;
 					objWidth=30;
 					objHeight=30;
 					areaT = "实验2； ";
@@ -865,6 +896,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button5")) {
+					selectListButtonNum=3;
 					objWidth=30;
 					objHeight=30;
 					areaT = "实验3； ";
@@ -890,6 +922,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button7")) {
+					selectListButtonNum=4;
 					objWidth=60;
 					objHeight=60;
 					areaT = "实验4； ";
@@ -915,6 +948,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button9")) {
+					selectListButtonNum=5;
 					objWidth=60;
 					objHeight=60;
 					areaT = "实验5； ";
@@ -940,6 +974,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button11")) {
+					selectListButtonNum=6;
 					objWidth=60;
 					objHeight=60;
 					areaT = "实验6； ";
@@ -965,6 +1000,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button13")) {
+					selectListButtonNum=7;
 					objWidth=90;
 					objHeight=90;
 					areaT = "实验7； ";
@@ -990,6 +1026,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button15")) {
+					selectListButtonNum=8;
 					objWidth=90;
 					objHeight=90;
 					areaT = "实验8； ";
@@ -1015,6 +1052,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button17")) {
+					selectListButtonNum=9;
 					objWidth=90;
 					objHeight=90;
 					areaT = "实验9； ";
@@ -1042,6 +1080,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button2")) {
+					selectListButtonNum=10;
 					objWidth=30;
 					objHeight=30;
 					areaT="实验10； ";
@@ -1067,6 +1106,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button4")) {
+					selectListButtonNum=11;
 					objWidth=30;
 					objHeight=30;
 					areaT = "实验11； ";
@@ -1092,6 +1132,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button6")) {
+					selectListButtonNum=12;
 					objWidth=30;
 					objHeight=30;
 					areaT = "实验12； ";
@@ -1117,6 +1158,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button8")) {
+					selectListButtonNum=13;
 					objWidth=60;
 					objHeight=60;
 					areaT = "实验13； ";
@@ -1142,6 +1184,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button10")) {
+					selectListButtonNum=14;
 					objWidth=60;
 					objHeight=60;
 					areaT = "实验14； ";
@@ -1167,6 +1210,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button12")) {
+					selectListButtonNum=15;
 					objWidth=60;
 					objHeight=60;
 					areaT = "实验15； ";
@@ -1191,6 +1235,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button14")) {
+					selectListButtonNum=16;
 					objWidth=90;
 					objHeight=90;
 					areaT = "实验16； ";
@@ -1215,6 +1260,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button16")) {
+					selectListButtonNum=17;
 					objWidth=90;
 					objHeight=90;
 					areaT = "实验17； ";
@@ -1239,6 +1285,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button18")) {
+					selectListButtonNum=18;
 					objWidth=90;
 					objHeight=90;
 					areaT = "实验18； ";
@@ -1265,6 +1312,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button17")) {
+					selectListButtonNum=19;
 					objWidth=90;
 					objHeight=90;
 					areaT="实验19； ";
@@ -1290,6 +1338,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button15")) {
+					selectListButtonNum=20;
 					objWidth=90;
 					objHeight=90;
 					areaT = "实验20； ";
@@ -1315,6 +1364,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button13")) {
+					selectListButtonNum=21;
 					objWidth=90;
 					objHeight=90;
 					areaT = "实验21； ";
@@ -1340,6 +1390,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button11")) {
+					selectListButtonNum=22;
 					objWidth=60;
 					objHeight=60;
 					areaT = "实验22； ";
@@ -1365,6 +1416,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button9")) {
+					selectListButtonNum=23;
 					objWidth=60;
 					objHeight=60;
 					areaT = "实验23； ";
@@ -1390,6 +1442,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button7")) {
+					selectListButtonNum=24;
 					objWidth=60;
 					objHeight=60;
 					areaT = "实验24； ";
@@ -1415,6 +1468,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button5")) {
+					selectListButtonNum=25;
 					objWidth=30;
 					objHeight=30;
 					areaT = "实验25； ";
@@ -1440,6 +1494,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button3")) {
+					selectListButtonNum=26;
 					objWidth=30;
 					objHeight=30;
 					areaT = "实验26； ";
@@ -1465,6 +1520,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button1")) {
+					selectListButtonNum=27;
 					objWidth=30;
 					objHeight=30;
 					areaT = "实验27； ";
@@ -1490,6 +1546,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button18")) {
+					selectListButtonNum=28;
 					objWidth=90;
 					objHeight=90;
 					areaT = "实验28； ";
@@ -1514,6 +1571,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button16")) {
+					selectListButtonNum=29;
 					objWidth=90;
 					objHeight=90;
 					areaT = "实验29； ";
@@ -1540,6 +1598,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button14")) {
+					selectListButtonNum=30;
 					objWidth=90;
 					objHeight=90;
 					areaT="实验30； ";
@@ -1565,6 +1624,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button12")) {
+					selectListButtonNum=31;
 					objWidth=60;
 					objHeight=60;
 					areaT = "实验31； ";
@@ -1590,6 +1650,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button10")) {
+					selectListButtonNum=32;
 					objWidth=60;
 					objHeight=60;
 					areaT = "实验32； ";
@@ -1615,6 +1676,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button8")) {
+					selectListButtonNum=33;
 					objWidth=60;
 					objHeight=60;
 					areaT = "实验33； ";
@@ -1640,6 +1702,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button6")) {
+					selectListButtonNum=34;
 					objWidth=30;
 					objHeight=30;
 					areaT = "实验34； ";
@@ -1665,6 +1728,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button4")) {
+					selectListButtonNum=35;
 					objWidth=30;
 					objHeight=30;
 					areaT = "实验35； ";
@@ -1690,6 +1754,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button2")) {
+					selectListButtonNum=36;
 					objWidth=30;
 					objHeight=30;
 					areaT = "实验36； ";
@@ -1715,6 +1780,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button11")) {
+					selectListButtonNum=37;
 					objWidth=60;
 					objHeight=60;
 					areaT = "实验37； ";
@@ -1740,6 +1806,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button18")) {
+					selectListButtonNum=38;
 					objWidth=90;
 					objHeight=90;
 					areaT = "实验38； ";
@@ -1767,6 +1834,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button1")) {
+					selectListButtonNum=39;
 					objWidth=30;
 					objHeight=30;
 					areaT="实验39； ";
@@ -1792,6 +1860,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button2")) {
+					selectListButtonNum=40;
 					objWidth=30;
 					objHeight=30;
 					areaT = "实验40； ";
@@ -1817,6 +1886,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button3")) {
+					selectListButtonNum=41;
 					objWidth=30;
 					objHeight=30;
 					areaT = "实验41； ";
@@ -1842,6 +1912,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button4")) {
+					selectListButtonNum=42;
 					objWidth=30;
 					objHeight=30;
 					areaT = "实验42； ";
@@ -1867,6 +1938,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button5")) {
+					selectListButtonNum=43;
 					objWidth=30;
 					objHeight=30;
 					areaT = "实验43； ";
@@ -1892,6 +1964,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button6")) {
+					selectListButtonNum=44;
 					objWidth=30;
 					objHeight=30;
 					areaT = "实验44； ";
@@ -1917,6 +1990,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button7")) {
+					selectListButtonNum=45;
 					objWidth=60;
 					objHeight=60;
 					areaT = "实验45； ";
@@ -1942,6 +2016,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button8")) {
+					selectListButtonNum=46;
 					objWidth=60;
 					objHeight=60;
 					areaT = "实验46； ";
@@ -1967,6 +2042,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button9")) {
+					selectListButtonNum=47;
 					objWidth=60;
 					objHeight=60;
 					areaT = "实验47； ";
@@ -1994,6 +2070,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button10")) {
+					selectListButtonNum=48;
 					objWidth=60;
 					objHeight=60;
 					areaT="实验48； ";
@@ -2019,6 +2096,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button12")) {
+					selectListButtonNum=49;
 					objWidth=60;
 					objHeight=60;
 					areaT = "实验49； ";
@@ -2044,6 +2122,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button13")) {
+					selectListButtonNum=50;
 					objWidth=90;
 					objHeight=90;
 					areaT = "实验50； ";
@@ -2069,6 +2148,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button14")) {
+					selectListButtonNum=51;
 					objWidth=90;
 					objHeight=90;
 					areaT = "实验51； ";
@@ -2094,6 +2174,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button15")) {
+					selectListButtonNum=52;
 					objWidth=90;
 					objHeight=90;
 					areaT = "实验52； ";
@@ -2119,6 +2200,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button16")) {
+					selectListButtonNum=53;
 					objWidth=90;
 					objHeight=90;
 					areaT = "实验53； ";
@@ -2144,6 +2226,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (readPointData("button17")) {
+					selectListButtonNum=54;
 					objWidth=90;
 					objHeight=90;
 					areaT = "实验54； ";
@@ -2160,6 +2243,7 @@ public class VoiceSelect {
 				}
 			}
 		});
+		
 		
 		
 		mainPanel.add(button1);
@@ -2232,7 +2316,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				testFlag = 1;
-				
+				selectListButtonNum=0;
 				testT="方法一； ";areaT="";keyT="";logT="";
 				setTitle();
 				
@@ -2297,6 +2381,7 @@ public class VoiceSelect {
 				button52.setBackground(Color.WHITE);
 				button53.setBackground(Color.WHITE);
 				button54.setBackground(Color.WHITE);
+				mainFrame.requestFocus();
 			}
 		});
 		buttonB = new JButton("方法二");
@@ -2308,6 +2393,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				testFlag = 2;
+				selectListButtonNum=0;
 				selectPanel.removeAll();
 				selectPanel.repaint(); 
 				testT="方法二； ";areaT="";keyT="";logT="";
@@ -2371,6 +2457,7 @@ public class VoiceSelect {
 				button52.setBackground(Color.WHITE);
 				button53.setBackground(Color.WHITE);
 				button54.setBackground(Color.WHITE);
+				mainFrame.requestFocus();
 			}
 		});
 		buttonC = new JButton("方法三");
@@ -2382,7 +2469,7 @@ public class VoiceSelect {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				testFlag = 3;
-				
+				selectListButtonNum = 0;
 				selectPanel.removeAll();
 				selectPanel.repaint(); 
 				testT="方法三； ";areaT="";keyT="";logT="";
@@ -2445,6 +2532,7 @@ public class VoiceSelect {
 				button52.setBackground(Color.WHITE);
 				button53.setBackground(Color.WHITE);
 				button54.setBackground(Color.WHITE);
+				mainFrame.requestFocus();
 			}
 		});
 		
@@ -2467,6 +2555,62 @@ public class VoiceSelect {
 		
 		testT="方法一； ";
 		setTitle();
+		
+		selectListButton.add(0,button1);
+		selectListButton.add(1,button2);
+		selectListButton.add(2,button3);
+		selectListButton.add(3,button4);
+		selectListButton.add(4,button5);
+		selectListButton.add(5,button6);
+		selectListButton.add(6,button7);
+		selectListButton.add(7,button8);
+		selectListButton.add(8,button9);
+		selectListButton.add(9,button10);
+		selectListButton.add(10,button11);
+		selectListButton.add(11,button12);
+		selectListButton.add(12,button13);
+		selectListButton.add(13,button14);
+		selectListButton.add(14,button15);
+		selectListButton.add(15,button16);
+		selectListButton.add(16,button17);
+		selectListButton.add(17,button18);
+		selectListButton.add(18,button19);
+		selectListButton.add(19,button20);
+		selectListButton.add(20,button21);
+		selectListButton.add(21,button22);
+		selectListButton.add(22,button23);
+		selectListButton.add(23,button24);
+		selectListButton.add(24,button25);
+		selectListButton.add(25,button26);
+		selectListButton.add(26,button27);
+		selectListButton.add(27,button28);
+		selectListButton.add(28,button29);
+		selectListButton.add(29,button30);
+		selectListButton.add(30,button31);
+		selectListButton.add(31,button32);
+		selectListButton.add(32,button33);
+		selectListButton.add(33,button34);
+		selectListButton.add(34,button35);
+		selectListButton.add(35,button36);
+		selectListButton.add(36,button37);
+		selectListButton.add(37,button38);
+		selectListButton.add(38,button39);
+		selectListButton.add(39,button40);
+		selectListButton.add(40,button41);
+		selectListButton.add(41,button42);
+		selectListButton.add(42,button43);
+		selectListButton.add(43,button44);
+		selectListButton.add(44,button45);
+		selectListButton.add(45,button46);
+		selectListButton.add(46,button47);
+		selectListButton.add(47,button48);
+		selectListButton.add(48,button49);
+		selectListButton.add(49,button50);
+		selectListButton.add(50,button51);
+		selectListButton.add(51,button52);
+		selectListButton.add(52,button53);
+		selectListButton.add(53,button54);
+
 		
 	}
 	

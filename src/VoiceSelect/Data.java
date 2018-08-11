@@ -22,8 +22,44 @@ public class Data {
     private String voice5End = "";
     private String voice5Result = "";
     private String numOfSelect= "";
+    private String voice1Time="";
+    private String voice2Time="";
+    private String voice3Time="";
+    private String voice4Time="";
+    private String voice5Time="";
     
-    public String getNumOfSelect() {
+    
+    public String getVoice1Time() {
+		return voice1Time;
+	}
+	public void setVoice1Time(String voice1Time) {
+		this.voice1Time = voice1Time;
+	}
+	public String getVoice2Time() {
+		return voice2Time;
+	}
+	public void setVoice2Time(String voice2Time) {
+		this.voice2Time = voice2Time;
+	}
+	public String getVoice3Time() {
+		return voice3Time;
+	}
+	public void setVoice3Time(String voice3Time) {
+		this.voice3Time = voice3Time;
+	}
+	public String getVoice4Time() {
+		return voice4Time;
+	}
+	public void setVoice4Time(String voice4Time) {
+		this.voice4Time = voice4Time;
+	}
+	public String getVoice5Time() {
+		return voice5Time;
+	}
+	public void setVoice5Time(String voice5Time) {
+		this.voice5Time = voice5Time;
+	}
+	public String getNumOfSelect() {
 		return numOfSelect;
 	}
 	public void setNumOfSelect(String numOfSelect) {

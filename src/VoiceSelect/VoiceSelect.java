@@ -113,11 +113,12 @@ public class VoiceSelect {
 	private int selectListButtonNum = 0;
 	
 	private int testFlag = 1;
+	private boolean saveFlag = false;//判断是否需要保存数据
 
 	private Point mousePoint = null;
 	private int layerNum = 5 ;
 	private int distanceOfEachLayer = 0;
-	private int numOfSelect;//操作步数
+	private int numOfSelect=0;//操作步数
 	private long startTime;
 	private long endTime;
 	private int voiceNum=0;
@@ -197,7 +198,6 @@ public class VoiceSelect {
 			}
 		}
 		
-		// 写入到excel
 		em.writeToExcel(filePath, sheetName, user, titleDate);
 
 	}
@@ -210,42 +210,55 @@ public class VoiceSelect {
 			if (textResult.contains("一")||textResult.contains("1")) {
 				switchPaint(1);
 				voiceNumFlag =true;
+				
 			}else if (textResult.contains("二")||textResult.contains("2")) {
 				switchPaint(2);
 				voiceNumFlag =true;
+				
 			}else if (textResult.contains("三")||textResult.contains("3")) {
 				switchPaint(3);
 				voiceNumFlag =true;
+				
 			}else if (textResult.contains("四")||textResult.contains("4")) {
 				switchPaint(4);
 				voiceNumFlag =true;
+				
 			}else if (textResult.contains("五")||textResult.contains("5")) {
 				switchPaint(5);
 				voiceNumFlag =true;
+				
 			}else if (textResult.contains("六")||textResult.contains("6")) {
 				switchPaint(6);
 				voiceNumFlag =true;
+				
 			}else if (textResult.contains("七")||textResult.contains("7")) {
 				switchPaint(7);
 				voiceNumFlag =true;
+				
 			}else if (textResult.contains("八")||textResult.contains("8")) {
 				switchPaint(8);
 				voiceNumFlag =true;
+				
 			}else if (textResult.contains("九")||textResult.contains("9")) {
 				switchPaint(9);	
 				voiceNumFlag =true;
+				
 			}else if (textResult.contains("上")) {
 				keyOri(3);
 				voiceNumFlag =true;
+				
 			}else if (textResult.contains("下")) {
 				keyOri(4);
 				voiceNumFlag =true;
+				
 			}else if (textResult.contains("左")) {
 				keyOri(1);
 				voiceNumFlag =true;
+				
 			}else if (textResult.contains("右")) {
 				keyOri(2);
 				voiceNumFlag =true;
+				
 			}
 		}else {
 			logT = "语音识别出错";
@@ -548,54 +561,42 @@ public class VoiceSelect {
 				super.keyPressed(e);
 				switch (e.getKeyCode()) {
 				case KeyEvent.VK_SPACE:
-					if (selectListButtonNum<54) {
-						selectListButton.get(selectListButtonNum).doClick();
+				 	if (!voiveFlag) {
+						if (!stopflag) {
+							// 停止录音
+							stopflag = true;
+							// 调用保存录音的方法
+							save();
+							recEndTime = System.currentTimeMillis();
+							setVoiceEndTime(voiceNum);
+							voiveFlag = true;
+							keyT = "语音识别结束,耗时:"+(recEndTime - recStartTime)+" 毫秒！;  " ;
+							logT = "识别结果为："+textResult;
+							setTitle();
+							setVoiceTime(voiceNum,String.valueOf(recEndTime - recStartTime));
+							setVoiceResult(voiceNum,textResult);
+						}
+					}else if (saveFlag) {
+						if (mousePoint!=null) {
+							user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+							mouseClick();
+							savaAllData();
+							saveFlag = false;
+						}
+					}else {
+						if (selectListButtonNum<54) {
+							selectListButton.get(selectListButtonNum).doClick();
+						}
 					}
 					break;
-				case KeyEvent.VK_1:
-					switchPaint(1);
-					break;
-				case KeyEvent.VK_2:
-					switchPaint(2);
-					break;
-				case KeyEvent.VK_3:
-					switchPaint(3);
-					break;
-				case KeyEvent.VK_4:
-					switchPaint(4);
-					break;
-				case KeyEvent.VK_5:
-					switchPaint(5);
-					break;
-				case KeyEvent.VK_6:
-					switchPaint(6);
-					break;
-				case KeyEvent.VK_7:
-					switchPaint(7);
-					break;
-				case KeyEvent.VK_8:
-					switchPaint(8);
-					break;
-				case KeyEvent.VK_9:
-					switchPaint(9);
-					break;
-				case KeyEvent.VK_LEFT:
-					keyOri(1);
-					break;
-				case KeyEvent.VK_RIGHT:
-					keyOri(2);
-					break;
-				case KeyEvent.VK_UP:
-					keyOri(3);
-					break;
-				case KeyEvent.VK_DOWN:
-					keyOri(4);
-					break;
 				case KeyEvent.VK_ENTER:
-					if (mousePoint!=null) {
-						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
-						mouseClick();
-						savaAllData();
+					if (saveFlag) {
+						if (mousePoint!=null) {
+							user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+							mouseClick();
+							savaAllData();
+							saveFlag = false;
+						}
 					}
 					break;
 				case KeyEvent.VK_Z:
@@ -611,24 +612,23 @@ public class VoiceSelect {
 						setVoiceStartTime(voiceNum);
 						capture(); // 调用录音的方法
 						voiveFlag = false;
+					}else {
+						if (!stopflag) {
+							// 停止录音
+							stopflag = true;
+							// 调用保存录音的方法
+							save();
+							recEndTime = System.currentTimeMillis();
+							setVoiceEndTime(voiceNum);
+							voiveFlag = true;
+							keyT = "语音识别结束,耗时:"+(recEndTime - recStartTime)+" 毫秒！;  " ;
+							logT = "识别结果为："+textResult;
+							setTitle();
+							setVoiceTime(voiceNum,String.valueOf(recEndTime - recStartTime));
+							setVoiceResult(voiceNum,textResult);
+						}
 					}
 					break;
-				case KeyEvent.VK_X:
-					if (!stopflag) {
-						// 停止录音
-						stopflag = true;
-						// 调用保存录音的方法
-						save();
-						recEndTime = System.currentTimeMillis();
-						setVoiceEndTime(voiceNum);
-						voiveFlag = true;
-						keyT = "语音识别结束,耗时:"+(recEndTime - recStartTime)+" 毫秒！;  " ;
-						logT = "识别结果为："+textResult;
-						setTitle();
-						setVoiceTime(voiceNum,String.valueOf(recEndTime - recStartTime));
-						setVoiceResult(voiceNum,textResult);
-						break;
-					}
 				}
 			}
 		});
@@ -766,7 +766,7 @@ public class VoiceSelect {
 		String os = System.getProperty("os.name");  
 		File file = new File(desktopPath+"/Desktop/PointData.xls");
 		if(os.toLowerCase().startsWith("win")){  
-			file = new File(desktopPath+"\\PointDatat.txt");
+			file = new File(desktopPath+"\\PointData.xls");
 		}
 		pointList = new ArrayList<Point>();
         try {
@@ -843,21 +843,30 @@ public class VoiceSelect {
 		button1.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint != null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button1")) {
-					selectListButtonNum=1;
-					objWidth=30;
-					objHeight=30;
-					areaT="实验1； ";
-					logT="实验开始";
-					keyT="";
+					selectListButtonNum = 1;
+					objWidth = 30;
+					objHeight = 30;
+					areaT = "实验1； ";
+					logT = "实验开始";
+					keyT = "";
 					setTitle();
-					voiceNum=0;
+					voiceNum = 0;
 					addBtnToPanel();
 					mainFrame.requestFocus();
 					enter();
 					user.setButtonName("1");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button1.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -869,6 +878,14 @@ public class VoiceSelect {
 		button2.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button3")) {
 					selectListButtonNum=2;
 					objWidth=30;
@@ -884,6 +901,7 @@ public class VoiceSelect {
 					user.setButtonName("2");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button2.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -895,6 +913,14 @@ public class VoiceSelect {
 		button3.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button5")) {
 					selectListButtonNum=3;
 					objWidth=30;
@@ -910,6 +936,7 @@ public class VoiceSelect {
 					user.setButtonName("3");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button3.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -936,6 +963,7 @@ public class VoiceSelect {
 					user.setButtonName("4");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button4.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -947,6 +975,14 @@ public class VoiceSelect {
 		button5.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button9")) {
 					selectListButtonNum=5;
 					objWidth=60;
@@ -962,6 +998,7 @@ public class VoiceSelect {
 					user.setButtonName("5");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button5.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -973,6 +1010,14 @@ public class VoiceSelect {
 		button6.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button11")) {
 					selectListButtonNum=6;
 					objWidth=60;
@@ -988,6 +1033,7 @@ public class VoiceSelect {
 					user.setButtonName("6");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button6.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -999,6 +1045,14 @@ public class VoiceSelect {
 		button7.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button13")) {
 					selectListButtonNum=7;
 					objWidth=90;
@@ -1014,6 +1068,7 @@ public class VoiceSelect {
 					user.setButtonName("7");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button7.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1025,6 +1080,14 @@ public class VoiceSelect {
 		button8.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button15")) {
 					selectListButtonNum=8;
 					objWidth=90;
@@ -1040,6 +1103,7 @@ public class VoiceSelect {
 					user.setButtonName("8");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button8.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1051,6 +1115,14 @@ public class VoiceSelect {
 		button9.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button17")) {
 					selectListButtonNum=9;
 					objWidth=90;
@@ -1066,6 +1138,7 @@ public class VoiceSelect {
 					user.setButtonName("9");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button9.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1079,6 +1152,14 @@ public class VoiceSelect {
 		button10.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button2")) {
 					selectListButtonNum=10;
 					objWidth=30;
@@ -1094,6 +1175,7 @@ public class VoiceSelect {
 					user.setButtonName("10");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button10.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1105,6 +1187,14 @@ public class VoiceSelect {
 		button11.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button4")) {
 					selectListButtonNum=11;
 					objWidth=30;
@@ -1120,6 +1210,7 @@ public class VoiceSelect {
 					user.setButtonName("11");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button11.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1131,6 +1222,14 @@ public class VoiceSelect {
 		button12.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button6")) {
 					selectListButtonNum=12;
 					objWidth=30;
@@ -1146,6 +1245,7 @@ public class VoiceSelect {
 					user.setButtonName("12");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button12.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1157,6 +1257,14 @@ public class VoiceSelect {
 		button13.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button8")) {
 					selectListButtonNum=13;
 					objWidth=60;
@@ -1172,6 +1280,7 @@ public class VoiceSelect {
 					user.setButtonName("13");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button13.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1183,6 +1292,14 @@ public class VoiceSelect {
 		button14.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button10")) {
 					selectListButtonNum=14;
 					objWidth=60;
@@ -1198,6 +1315,7 @@ public class VoiceSelect {
 					user.setButtonName("14");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button14.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1209,6 +1327,14 @@ public class VoiceSelect {
 		button15.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button12")) {
 					selectListButtonNum=15;
 					objWidth=60;
@@ -1223,6 +1349,7 @@ public class VoiceSelect {
 					user.setButtonName("15");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button15.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1234,6 +1361,14 @@ public class VoiceSelect {
 		button16.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button14")) {
 					selectListButtonNum=16;
 					objWidth=90;
@@ -1248,6 +1383,7 @@ public class VoiceSelect {
 					user.setButtonName("16");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button16.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1259,6 +1395,14 @@ public class VoiceSelect {
 		button17.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button16")) {
 					selectListButtonNum=17;
 					objWidth=90;
@@ -1273,6 +1417,7 @@ public class VoiceSelect {
 					user.setButtonName("17");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button17.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1284,6 +1429,14 @@ public class VoiceSelect {
 		button18.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button18")) {
 					selectListButtonNum=18;
 					objWidth=90;
@@ -1298,6 +1451,7 @@ public class VoiceSelect {
 					user.setButtonName("18");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button18.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1311,6 +1465,14 @@ public class VoiceSelect {
 		button19.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button17")) {
 					selectListButtonNum=19;
 					objWidth=90;
@@ -1326,6 +1488,7 @@ public class VoiceSelect {
 					user.setButtonName("19");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button19.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1337,6 +1500,14 @@ public class VoiceSelect {
 		button20.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button15")) {
 					selectListButtonNum=20;
 					objWidth=90;
@@ -1352,6 +1523,7 @@ public class VoiceSelect {
 					user.setButtonName("20");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button20.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1363,6 +1535,14 @@ public class VoiceSelect {
 		button21.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button13")) {
 					selectListButtonNum=21;
 					objWidth=90;
@@ -1378,6 +1558,7 @@ public class VoiceSelect {
 					user.setButtonName("21");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button21.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1389,6 +1570,14 @@ public class VoiceSelect {
 		button22.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button11")) {
 					selectListButtonNum=22;
 					objWidth=60;
@@ -1404,6 +1593,7 @@ public class VoiceSelect {
 					user.setButtonName("22");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button22.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1415,6 +1605,14 @@ public class VoiceSelect {
 		button23.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button9")) {
 					selectListButtonNum=23;
 					objWidth=60;
@@ -1430,6 +1628,7 @@ public class VoiceSelect {
 					user.setButtonName("23");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button23.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1441,6 +1640,14 @@ public class VoiceSelect {
 		button24.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button7")) {
 					selectListButtonNum=24;
 					objWidth=60;
@@ -1456,6 +1663,7 @@ public class VoiceSelect {
 					user.setButtonName("24");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button24.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1467,6 +1675,14 @@ public class VoiceSelect {
 		button25.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button5")) {
 					selectListButtonNum=25;
 					objWidth=30;
@@ -1482,6 +1698,7 @@ public class VoiceSelect {
 					user.setButtonName("25");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button25.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1493,6 +1710,14 @@ public class VoiceSelect {
 		button26.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button3")) {
 					selectListButtonNum=26;
 					objWidth=30;
@@ -1508,6 +1733,7 @@ public class VoiceSelect {
 					user.setButtonName("26");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button26.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1519,6 +1745,14 @@ public class VoiceSelect {
 		button27.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button1")) {
 					selectListButtonNum=27;
 					objWidth=30;
@@ -1534,6 +1768,7 @@ public class VoiceSelect {
 					user.setButtonName("27");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button27.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1545,6 +1780,14 @@ public class VoiceSelect {
 		button28.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button18")) {
 					selectListButtonNum=28;
 					objWidth=90;
@@ -1559,6 +1802,7 @@ public class VoiceSelect {
 					user.setButtonName("28");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button28.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1570,6 +1814,14 @@ public class VoiceSelect {
 		button29.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button16")) {
 					selectListButtonNum=29;
 					objWidth=90;
@@ -1585,6 +1837,7 @@ public class VoiceSelect {
 					user.setButtonName("29");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button29.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1597,6 +1850,14 @@ public class VoiceSelect {
 		button30.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button14")) {
 					selectListButtonNum=30;
 					objWidth=90;
@@ -1612,6 +1873,7 @@ public class VoiceSelect {
 					user.setButtonName("30");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button30.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1623,6 +1885,14 @@ public class VoiceSelect {
 		button31.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button12")) {
 					selectListButtonNum=31;
 					objWidth=60;
@@ -1638,6 +1908,7 @@ public class VoiceSelect {
 					user.setButtonName("31");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button31.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1649,6 +1920,14 @@ public class VoiceSelect {
 		button32.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button10")) {
 					selectListButtonNum=32;
 					objWidth=60;
@@ -1664,6 +1943,7 @@ public class VoiceSelect {
 					user.setButtonName("32");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button32.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1675,6 +1955,14 @@ public class VoiceSelect {
 		button33.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button8")) {
 					selectListButtonNum=33;
 					objWidth=60;
@@ -1690,6 +1978,7 @@ public class VoiceSelect {
 					user.setButtonName("33");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button33.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1701,6 +1990,14 @@ public class VoiceSelect {
 		button34.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button6")) {
 					selectListButtonNum=34;
 					objWidth=30;
@@ -1716,6 +2013,7 @@ public class VoiceSelect {
 					user.setButtonName("34");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button34.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1727,6 +2025,14 @@ public class VoiceSelect {
 		button35.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button4")) {
 					selectListButtonNum=35;
 					objWidth=30;
@@ -1742,6 +2048,7 @@ public class VoiceSelect {
 					user.setButtonName("35");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button35.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1753,6 +2060,14 @@ public class VoiceSelect {
 		button36.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button2")) {
 					selectListButtonNum=36;
 					objWidth=30;
@@ -1768,6 +2083,7 @@ public class VoiceSelect {
 					user.setButtonName("36");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button36.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1779,6 +2095,14 @@ public class VoiceSelect {
 		button37.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button11")) {
 					selectListButtonNum=37;
 					objWidth=60;
@@ -1794,6 +2118,7 @@ public class VoiceSelect {
 					user.setButtonName("37");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button37.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1805,6 +2130,14 @@ public class VoiceSelect {
 		button38.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button18")) {
 					selectListButtonNum=38;
 					objWidth=90;
@@ -1820,6 +2153,7 @@ public class VoiceSelect {
 					user.setButtonName("38");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button38.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1833,6 +2167,14 @@ public class VoiceSelect {
 		button39.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button1")) {
 					selectListButtonNum=39;
 					objWidth=30;
@@ -1848,6 +2190,7 @@ public class VoiceSelect {
 					user.setButtonName("39");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button39.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1859,6 +2202,14 @@ public class VoiceSelect {
 		button40.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button2")) {
 					selectListButtonNum=40;
 					objWidth=30;
@@ -1874,6 +2225,7 @@ public class VoiceSelect {
 					user.setButtonName("40");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button40.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1885,6 +2237,14 @@ public class VoiceSelect {
 		button41.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button3")) {
 					selectListButtonNum=41;
 					objWidth=30;
@@ -1900,6 +2260,7 @@ public class VoiceSelect {
 					user.setButtonName("41");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button41.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1911,6 +2272,14 @@ public class VoiceSelect {
 		button42.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button4")) {
 					selectListButtonNum=42;
 					objWidth=30;
@@ -1926,6 +2295,7 @@ public class VoiceSelect {
 					user.setButtonName("42");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button42.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1937,6 +2307,14 @@ public class VoiceSelect {
 		button43.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button5")) {
 					selectListButtonNum=43;
 					objWidth=30;
@@ -1952,6 +2330,7 @@ public class VoiceSelect {
 					user.setButtonName("43");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button43.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1963,6 +2342,14 @@ public class VoiceSelect {
 		button44.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button6")) {
 					selectListButtonNum=44;
 					objWidth=30;
@@ -1978,6 +2365,7 @@ public class VoiceSelect {
 					user.setButtonName("44");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button44.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -1989,6 +2377,14 @@ public class VoiceSelect {
 		button45.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button7")) {
 					selectListButtonNum=45;
 					objWidth=60;
@@ -2004,6 +2400,7 @@ public class VoiceSelect {
 					user.setButtonName("45");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button45.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -2015,6 +2412,14 @@ public class VoiceSelect {
 		button46.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button8")) {
 					selectListButtonNum=46;
 					objWidth=60;
@@ -2030,6 +2435,7 @@ public class VoiceSelect {
 					user.setButtonName("46");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button46.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -2041,6 +2447,14 @@ public class VoiceSelect {
 		button47.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button9")) {
 					selectListButtonNum=47;
 					objWidth=60;
@@ -2056,6 +2470,7 @@ public class VoiceSelect {
 					user.setButtonName("47");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button47.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -2069,6 +2484,14 @@ public class VoiceSelect {
 		button48.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button10")) {
 					selectListButtonNum=48;
 					objWidth=60;
@@ -2084,6 +2507,7 @@ public class VoiceSelect {
 					user.setButtonName("48");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button48.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -2095,6 +2519,14 @@ public class VoiceSelect {
 		button49.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button12")) {
 					selectListButtonNum=49;
 					objWidth=60;
@@ -2110,6 +2542,7 @@ public class VoiceSelect {
 					user.setButtonName("49");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button49.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -2121,6 +2554,14 @@ public class VoiceSelect {
 		button50.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button13")) {
 					selectListButtonNum=50;
 					objWidth=90;
@@ -2136,6 +2577,7 @@ public class VoiceSelect {
 					user.setButtonName("50");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button50.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -2147,6 +2589,14 @@ public class VoiceSelect {
 		button51.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button14")) {
 					selectListButtonNum=51;
 					objWidth=90;
@@ -2162,6 +2612,7 @@ public class VoiceSelect {
 					user.setButtonName("51");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button51.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -2173,6 +2624,14 @@ public class VoiceSelect {
 		button52.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button15")) {
 					selectListButtonNum=52;
 					objWidth=90;
@@ -2188,6 +2647,7 @@ public class VoiceSelect {
 					user.setButtonName("52");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button52.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -2199,6 +2659,14 @@ public class VoiceSelect {
 		button53.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button16")) {
 					selectListButtonNum=53;
 					objWidth=90;
@@ -2214,6 +2682,7 @@ public class VoiceSelect {
 					user.setButtonName("53");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button53.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -2225,6 +2694,14 @@ public class VoiceSelect {
 		button54.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (saveFlag) {
+					if (mousePoint!=null) {
+						user.setTestEnd(String.valueOf(System.currentTimeMillis()));
+						mouseClick();
+						savaAllData();
+						saveFlag = false;
+					}
+				}
 				if (readPointData("button17")) {
 					selectListButtonNum=54;
 					objWidth=90;
@@ -2240,6 +2717,7 @@ public class VoiceSelect {
 					user.setButtonName("54");
 					user.setTestStart(String.valueOf(System.currentTimeMillis()));
 					button54.setBackground(Color.GRAY);
+					saveFlag = true;
 				}
 			}
 		});
@@ -2836,7 +3314,8 @@ public class VoiceSelect {
 			t1.start();
 
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			//ex.printStackTrace();
+			JOptionPane.showMessageDialog(new JFrame().getContentPane(), "麦克风错误", "系统信息", JOptionPane.QUESTION_MESSAGE); 
 			return;
 		}
 	}
@@ -2854,7 +3333,8 @@ public class VoiceSelect {
 			textResult = rec(myAudioData);
 			textAnalyze(textResult);
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			JOptionPane.showMessageDialog(new JFrame().getContentPane(), "语音识别出错", "系统信息", JOptionPane.QUESTION_MESSAGE); 
 		} finally {
 			try {
 				if (bais != null) {
@@ -2864,7 +3344,8 @@ public class VoiceSelect {
 					ais.close();
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				//e.printStackTrace();
+				JOptionPane.showMessageDialog(new JFrame().getContentPane(), "流数据出错1", "系统信息", JOptionPane.QUESTION_MESSAGE); 
 			}
 		}
 
@@ -2888,14 +3369,16 @@ public class VoiceSelect {
 					}
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				//e.printStackTrace();
+				JOptionPane.showMessageDialog(new JFrame().getContentPane(), "写入流出错", "系统信息", JOptionPane.QUESTION_MESSAGE); 
 			} finally {
 				try {
 					if (baos != null) {
 						baos.close();
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
+					//e.printStackTrace();
+					JOptionPane.showMessageDialog(new JFrame().getContentPane(), "流数据出错2", "系统信息", JOptionPane.QUESTION_MESSAGE); 
 				} finally {
 					td.close();
 				}
@@ -2910,8 +3393,10 @@ public class VoiceSelect {
 
 		HashMap<String, Object> options = new HashMap<String, Object>();
 		options.put("dev_pid", 1536);
-		JSONObject res = client.asr(myData, "wav", 16000, options);
-
+		JSONObject res = null;
+		
+		res = client.asr(myData, "wav", 16000, options);
+		
 		if (res.has("result")) {
 			JSONArray jsonArray = res.getJSONArray("result");
 			result = jsonArray.getString(0);
@@ -2938,6 +3423,7 @@ public class VoiceSelect {
 	
 	public static void main(String[] args) {
 		new VoiceSelect();
+		
 	}
 
 }
